@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cszx.pm.dao.Internal.InternalItemDao" >
+  <resultMap id="BaseResultMap" type="com.cszx.pm.model.internal.InternalItem" >
+    <result column="id" property="id" jdbcType="VARCHAR" />
+    <result column="internal_test_id" property="internalTestId" jdbcType="VARCHAR" />
+    <result column="internal_test_times" property="internalTestTimes" jdbcType="INTEGER" />
+    <result column="deploy_start_time" property="deployStartTime" jdbcType="TIMESTAMP" />
+    <result column="deploy_end_time" property="deployEndTime" jdbcType="TIMESTAMP" />
+    <result column="test_start_time" property="testStartTime" jdbcType="TIMESTAMP" />
+    <result column="test_end_time" property="testEndTime" jdbcType="TIMESTAMP" />
+    <result column="test_time" property="testTime" jdbcType="VARCHAR" />
+    <result column="correct_time" property="correctTime" jdbcType="VARCHAR" />
+    <result column="runabled" property="runabled" jdbcType="DOUBLE" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <select id="selectInternalItems" resultMap="BaseResultMap" parameterType="java.lang.String">
+  	select 
+  		id,
+  		internal_test_id,
+  		internal_test_times,
+  		deploy_start_time,
+  		deploy_end_time,
+  		test_start_time,
+  		test_end_time,
+  		test_time,
+  		correct_time,
+  		runabled,
+  		remark
+  	from
+  		pm_internal_test_item
+  	where internal_test_id=#{id}
+  	ORDER BY internal_test_times
+  </select>
+  
+  <select id="getTestEndTime" resultType="java.util.Date" parameterType="java.util.Map">
+  	select 
+  		test_end_time
+  	from
+  		pm_internal_test_item
+  	where 1=1
+  	<if test="internalTestId != null and internalTestId !=''">
+  		and internal_test_id = #{internalTestId}
+  	</if>
+  	<if test="internalTestTimes != null and internalTestTimes !=''">
+  		and internal_test_times=#{internalTestTimes}
+  	</if>
+  </select>
+  
+  <insert id="addInternalItems" parameterType="com.cszx.pm.model.internal.InternalItemVo" >
+    insert into pm_internal_test_item
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="internalTestId != null" >
+        internal_test_id,
+      </if>
+      <if test="internalTestTimes != null" >
+        internal_test_times,
+      </if>
+      <if test="deployStartTime != null and deployStartTime !=''" >
+        deploy_start_time,
+      </if>
+      <if test="deployEndTime != null and deployStartTime !=''" >
+        deploy_end_time,
+      </if>
+      <if test="testStartTime != null and testStartTime != ''">
+        test_start_time,
+      </if>
+      <if test="testEndTime != null and testEndTime != ''">
+        test_end_time,
+      </if>
+      <if test="testTime != null">
+        test_time,
+      </if>
+      <if test="correctTime != null">
+        correct_time,
+      </if>
+      <if test="runabled != null">
+        runabled,
+      </if>
+      <if test="remark != null and remark!=''">
+        remark
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="internalTestId != null" >
+        #{internalTestId,jdbcType=VARCHAR},
+      </if>
+      <if test="internalTestTimes != null" >
+        #{internalTestTimes,jdbcType=INTEGER},
+      </if>
+      <if test="deployStartTime != null and deployStartTime !=''" >
+        #{deployStartTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deployEndTime != null and deployEndTime !=''" >
+        #{deployEndTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="testStartTime != null and testStartTime !=''" >
+        #{testStartTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="testEndTime != null and testEndTime !=''" >
+        #{testEndTime,jdbcType=TIMESTAMP},
+      </if>
+       <if test="testTime != null" >
+        #{testTime,jdbcType=VARCHAR},
+      </if>
+      <if test="correctTime != null" >
+        #{correctTime,jdbcType=VARCHAR},
+      </if>
+      <if test="runabled != null">
+        #{runabled,jdbcType=DOUBLE},
+      </if>
+      <if test="remark != null and remark!=''">
+        #{remark,jdbcType=VARCHAR}
+      </if>
+    </trim>
+  </insert>
+  <update id="updateInternalItems" parameterType="com.cszx.pm.model.internal.InternalItemVo">
+  	update pm_internal_test_item
+  	  <set>
+      <if test="id != null">
+        id = #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="internalTestId != null">
+        internal_test_id = #{internalTestId,jdbcType=VARCHAR},
+      </if>
+      <if test="internalTestTimes != null">
+        internal_test_times = #{internalTestTimes,jdbcType=INTEGER},
+      </if>
+      <if test="deployStartTime != null">
+        deploy_start_time = #{deployStartTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deployEndTime != null">
+        deploy_end_time = #{deployEndTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="testStartTime != null">
+        test_start_time = #{testStartTime,jdbcType=TIMESTAMP},
+      </if>
+	  <if test="testEndTime != null">
+        test_end_time = #{testEndTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="testTime != null">
+        test_time = #{testTime,jdbcType=TIMESTAMP},
+      </if>
+	  <if test="correctTime != null">
+        correct_time = #{correctTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="runabled != null">
+        runabled=#{runabled,jdbcType=DOUBLE},
+      </if>
+      <if test="remark != null and remark!=''">
+        remark=#{remark,jdbcType=VARCHAR}
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}	
+  </update>
+  
+  <delete id="deleteItems" parameterType="java.util.List">
+  	delete from pm_internal_test_item where ID in
+  	<foreach close=")" collection="list" item="id" open="(" separator=",">
+  		#{id}
+  	</foreach>
+  </delete>
+</mapper>

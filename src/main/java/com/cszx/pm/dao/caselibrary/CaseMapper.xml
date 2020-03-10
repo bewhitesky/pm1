@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cszx.pm.dao.caselibrary.CaseDao" >
+  <resultMap id="BaseResultMap" type="com.cszx.pm.model.caselibrary.Case" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="num" property="num" jdbcType="VARCHAR" />
+    <result column="check_module" property="checkModule" jdbcType="VARCHAR" />
+    <result column="check_item" property="checkItem" jdbcType="VARCHAR" />
+    <result column="check_point" property="checkPoint" jdbcType="VARCHAR" />
+    <result column="test_point" property="testPoint" jdbcType="VARCHAR" />
+    <result column="test_step" property="testStep" jdbcType="VARCHAR" />
+    <result column="test_level" property="testLevel" jdbcType="VARCHAR" />
+    <result column="test_result" property="testResult" jdbcType="VARCHAR" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, num, check_module, check_item, check_point, test_point, test_step, test_level, 
+    test_result, remark
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from pm_case_library
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectCase" resultMap="BaseResultMap" parameterType="com.cszx.pm.model.caselibrary.Case" >
+    select 
+    <include refid="Base_Column_List" />
+    from pm_case_library
+    where 1=1
+    <if test="id!=null and id!=''">
+    	and id = #{id}
+    </if>
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from pm_case_library
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.cszx.pm.model.caselibrary.Case" >
+    insert into pm_case_library (id, num, check_module, 
+      check_item, check_point, test_point, 
+      test_step, test_level, test_result, 
+      remark)
+    values (#{id,jdbcType=VARCHAR}, #{num,jdbcType=VARCHAR}, #{checkModule,jdbcType=VARCHAR}, 
+      #{checkItem,jdbcType=VARCHAR}, #{checkPoint,jdbcType=VARCHAR}, #{testPoint,jdbcType=VARCHAR}, 
+      #{testStep,jdbcType=VARCHAR}, #{testLevel,jdbcType=VARCHAR}, #{testResult,jdbcType=VARCHAR}, 
+      #{remark,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.cszx.pm.model.caselibrary.Case" >
+    insert into pm_case_library
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="num != null" >
+        num,
+      </if>
+      <if test="checkModule != null" >
+        check_module,
+      </if>
+      <if test="checkItem != null" >
+        check_item,
+      </if>
+      <if test="checkPoint != null" >
+        check_point,
+      </if>
+      <if test="testPoint != null" >
+        test_point,
+      </if>
+      <if test="testStep != null" >
+        test_step,
+      </if>
+      <if test="testLevel != null" >
+        test_level,
+      </if>
+      <if test="testResult != null" >
+        test_result,
+      </if>
+      <if test="remark != null" >
+        remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="num != null" >
+        #{num,jdbcType=VARCHAR},
+      </if>
+      <if test="checkModule != null" >
+        #{checkModule,jdbcType=VARCHAR},
+      </if>
+      <if test="checkItem != null" >
+        #{checkItem,jdbcType=VARCHAR},
+      </if>
+      <if test="checkPoint != null" >
+        #{checkPoint,jdbcType=VARCHAR},
+      </if>
+      <if test="testPoint != null" >
+        #{testPoint,jdbcType=VARCHAR},
+      </if>
+      <if test="testStep != null" >
+        #{testStep,jdbcType=VARCHAR},
+      </if>
+      <if test="testLevel != null" >
+        #{testLevel,jdbcType=VARCHAR},
+      </if>
+      <if test="testResult != null" >
+        #{testResult,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cszx.pm.model.caselibrary.Case" >
+    update pm_case_library
+    <set >
+      <if test="num != null" >
+        num = #{num,jdbcType=VARCHAR},
+      </if>
+      <if test="checkModule != null" >
+        check_module = #{checkModule,jdbcType=VARCHAR},
+      </if>
+      <if test="checkItem != null" >
+        check_item = #{checkItem,jdbcType=VARCHAR},
+      </if>
+      <if test="checkPoint != null" >
+        check_point = #{checkPoint,jdbcType=VARCHAR},
+      </if>
+      <if test="testPoint != null" >
+        test_point = #{testPoint,jdbcType=VARCHAR},
+      </if>
+      <if test="testStep != null" >
+        test_step = #{testStep,jdbcType=VARCHAR},
+      </if>
+      <if test="testLevel != null" >
+        test_level = #{testLevel,jdbcType=VARCHAR},
+      </if>
+      <if test="testResult != null" >
+        test_result = #{testResult,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cszx.pm.model.caselibrary.Case" >
+    update pm_case_library
+    set num = #{num,jdbcType=VARCHAR},
+      check_module = #{checkModule,jdbcType=VARCHAR},
+      check_item = #{checkItem,jdbcType=VARCHAR},
+      check_point = #{checkPoint,jdbcType=VARCHAR},
+      test_point = #{testPoint,jdbcType=VARCHAR},
+      test_step = #{testStep,jdbcType=VARCHAR},
+      test_level = #{testLevel,jdbcType=VARCHAR},
+      test_result = #{testResult,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

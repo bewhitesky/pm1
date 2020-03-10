@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cszx.pm.dao.datadic.DatadicItemsDao" >
+  <resultMap id="BaseResultMap" type="com.cszx.pm.model.datadic.DatadicItems" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="dataitem_code" property="dataitemCode" jdbcType="VARCHAR" />
+    <result column="dataitem_name" property="dataitemName" jdbcType="VARCHAR" />
+    <result column="group_code" property="groupCode" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <resultMap id="DatadicMap" type="com.cszx.pm.model.datadic.Datadic" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="group_code" property="groupCode" jdbcType="VARCHAR" />
+    <result column="group_name" property="groupName" jdbcType="VARCHAR" />
+  	<association column="group_code"  property="datadicItems" select="selectItemsByGroupCode"></association>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, dataitem_code, dataitem_name, group_code
+  </sql>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from datadic_items
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteItems" parameterType="java.lang.String" >
+    delete from datadic_items
+    where group_code = #{groupCode,jdbcType=VARCHAR}
+  </delete>
+  
+  <insert id="insert" parameterType="com.cszx.pm.model.datadic.DatadicItems" >
+    insert into datadic_items (id, dataitem_code, dataitem_name, 
+      group_code)
+    values (#{id,jdbcType=VARCHAR}, #{dataitemCode,jdbcType=VARCHAR}, #{dataitemName,jdbcType=VARCHAR}, 
+      #{groupCode,jdbcType=VARCHAR})
+  </insert>
+  
+  <insert id="insertSelective" parameterType="com.cszx.pm.model.datadic.DatadicItems" >
+    insert into datadic_items
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="dataitemCode != null" >
+        dataitem_code,
+      </if>
+      <if test="dataitemName != null" >
+        dataitem_name,
+      </if>
+      <if test="groupCode != null" >
+        group_code,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="dataitemCode != null" >
+        #{dataitemCode,jdbcType=VARCHAR},
+      </if>
+      <if test="dataitemName != null" >
+        #{dataitemName,jdbcType=VARCHAR},
+      </if>
+      <if test="groupCode != null" >
+        #{groupCode,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cszx.pm.model.datadic.DatadicItems" >
+    update datadic_items
+    <set >
+      <if test="dataitemCode != null" >
+        dataitem_code = #{dataitemCode,jdbcType=VARCHAR},
+      </if>
+      <if test="dataitemName != null" >
+        dataitem_name = #{dataitemName,jdbcType=VARCHAR},
+      </if>
+      <if test="groupCode != null" >
+        group_code = #{groupCode,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cszx.pm.model.datadic.DatadicItems" >
+    update datadic_items
+    set dataitem_code = #{dataitemCode,jdbcType=VARCHAR},
+      dataitem_name = #{dataitemName,jdbcType=VARCHAR},
+      group_code = #{groupCode,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <select id="selectItems" resultMap="BaseResultMap"  parameterType="java.util.Map">
+  	select id,group_code,dataitem_code,dataitem_name
+  	from datadic_items
+  	where 1=1
+  	<if test="dataitemCode != null and dataitemCode !=''">
+  		and dataitem_code  LIKE CONCAT(CONCAT('%', #{dataitemCode}), '%')
+  	</if>
+  	<if test="dataitemName != null and dataitemName !=''">
+  		and dataitem_name LIKE CONCAT(CONCAT('%', #{dataitemName}), '%')
+  	</if>
+  	<if test="groupCode != null and groupCode !=''">
+  		and group_code =#{groupCode}
+  	</if>
+  	order by CONVERT(dataitem_code,SIGNED)
+  </select>
+  
+   <select id="selectDatadicByGroupCode" resultMap="DatadicMap"  parameterType="java.lang.String">
+  	SELECT 
+		group_code ,group_name
+	FROM datadic_groups
+	WHERE group_code=#{groupCode}
+  </select>
+  <select id="selectItemsByGroupCode" resultMap="BaseResultMap"  parameterType="java.lang.String">
+  	select group_code,dataitem_code,dataitem_name
+  	from datadic_items
+	WHERE group_code=#{groupCode}
+	order by CONVERT(dataitem_code,SIGNED)
+  </select>
+  <select id="getItemCode" resultType="java.lang.String"  parameterType="java.util.Map">
+  	select dataitem_code
+  	from datadic_items
+  	where 1=1
+  	<if test="dataitemName != null and dataitemName !=''">
+  		and dataitem_name =#{dataitemName}
+  	</if>
+  	<if test="groupCode != null and groupCode !=''">
+  		and group_code =#{groupCode}
+  	</if>
+  </select>
+  
+  <insert id="addItems" parameterType="java.util.List">
+  	insert into datadic_items (id, dataitem_code, dataitem_name, group_code)
+      values
+	  <foreach collection="list" item="item" index="index" separator=",">  
+      <trim prefix="(" suffix=")" suffixOverrides="," >
+      	<if test="item.id != null and item.id !=''" >
+      		#{item.id,jdbcType=VARCHAR},
+      	</if>
+      	<if test="item.dataitemCode != null and item.dataitemCode !=''" >
+      		#{item.dataitemCode,jdbcType=VARCHAR},
+      	</if>
+      	<if test="item.dataitemName != null and item.dataitemName !=''" >
+      		#{item.dataitemName,jdbcType=VARCHAR},
+      	</if>
+      	<if test="item.groupCode != null and item.groupCode !=''" >
+      		#{item.groupCode,jdbcType=VARCHAR},
+      	</if>
+      </trim>
+      </foreach> 
+  </insert>
+</mapper>

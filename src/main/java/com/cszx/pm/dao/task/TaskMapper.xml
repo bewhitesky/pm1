@@ -1,0 +1,509 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cszx.pm.dao.task.TaskDao" >
+  <resultMap id="BaseResultMap" type="com.cszx.pm.model.task.Task" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="task_name" property="taskName" jdbcType="VARCHAR" />
+    <result column="turn" property="turn" jdbcType="VARCHAR" />
+    <result column="task_require" property="taskRequire" jdbcType="INTEGER" />
+    <result column="task_state" property="taskState" jdbcType="INTEGER" />
+    <result column="executor" property="executor" jdbcType="VARCHAR" />
+    <result column="expect_start_time" property="expectStartTime" jdbcType="TIMESTAMP" />
+    <result column="actual_start_time" property="actualStartTime" jdbcType="TIMESTAMP" />
+    <result column="deadline" property="deadline" jdbcType="TIMESTAMP" />
+    <result column="actual_end_time" property="actualEndTime" jdbcType="TIMESTAMP" />
+    <result column="creat_time" property="creatTime" jdbcType="TIMESTAMP" />
+    <result column="task_description" property="taskDescription" jdbcType="LONGVARCHAR" />
+    <result column="remark" property="remark" jdbcType="LONGVARCHAR" />
+    <result column="expect_day" property="expectDay" jdbcType="INTEGER" />
+    <result column="actual_day" property="actualDay" jdbcType="INTEGER" />
+    <result column="expect_progress" property="expectProgress" jdbcType="DOUBLE" />
+    <result column="actual_progress" property="actualProgress" jdbcType="DOUBLE" />
+    <result column="curr_state" property="currState" jdbcType="VARCHAR" />
+    <result column="workload" property="workload" jdbcType="INTEGER" />
+    <result column="test_stage" property="testStage" jdbcType="INTEGER" />
+    <result column="level" property="level" jdbcType="INTEGER" />
+    <result column="case_day" property="caseDay" jdbcType="INTEGER" />
+    <result column="case_num" property="caseNum" jdbcType="INTEGER" />
+  </resultMap>
+  
+  <resultMap id="HistoryMap" type="com.cszx.pm.model.task.TaskHistory" >
+  	<result column="id" property="id" jdbcType="VARCHAR" />
+    <result column="createtime" property="createtime" jdbcType="VARCHAR" />
+    <result column="progress" property="progress" jdbcType="DOUBLE" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <sql id="Blob_Column_List" >
+      id, task_name, turn, task_require, 
+      task_state, executor, expect_start_time, 
+      actual_start_time, deadline, actual_end_time, 
+      creat_time, expect_day, actual_day, 
+      actual_progress, curr_state, 
+      workload, level, p_id, workratio,test_stage,
+      task_description, remark,case_day,case_num
+  </sql>
+  <select id="getTodayTask" resultMap="BaseResultMap"  parameterType="java.util.Map">
+  		select
+  		<include refid="Blob_Column_List" />,
+  		<![CDATA[
+  		IF(expect_start_time<SYSDATE(),((SELECT COUNT(id) FROM workday WHERE 
+	    workday BETWEEN expect_start_time AND IF(SYSDATE()<deadline,SYSDATE(),deadline))/expect_day*100),0) AS expect_progress
+		]]>
+  		from pm_task
+  		where 1=1
+  		<if test="id != null and id != ''" >
+	    	and id=#{id}
+    	</if>
+	    <if test="today != null and today != ''" >
+	    	<![CDATA[
+	        and  (deadline > #{today}
+		    OR CONVERT(deadline, CHAR) LIKE CONCAT(#{today}, '%') )
+	        and (expect_start_time < #{today}
+	    	OR CONVERT(expect_start_time, CHAR) LIKE CONCAT(#{today}, '%') )]]>
+    	</if>
+    	<if test="userName !=null and userName !=''">
+    		and executor=#{userName}
+    	</if>
+	  	order by  p_id,expect_start_time DESC 
+  </select>
+  
+  <select id="getSubTask" resultMap="BaseResultMap" parameterType="java.lang.String">
+  	select 
+	  	id, task_name, turn, task_require, 
+	    task_state, executor, expect_start_time, 
+	    actual_start_time, deadline, actual_end_time, 
+	    creat_time, expect_day, actual_day, 
+	    actual_progress, curr_state, 
+	    workload, level, p_id, workratio,test_stage,
+	    task_description, remark,case_day,case_num,
+	    <![CDATA[
+  		IF(expect_start_time<SYSDATE(),((SELECT COUNT(id) FROM workday WHERE 
+	    workday BETWEEN expect_start_time AND IF(SYSDATE()<deadline,SYSDATE(),deadline))/expect_day*100),0) AS expect_progress
+		]]>
+    from 
+    	pm_task
+    where p_id=#{id}
+    ORDER BY expect_start_time DESC
+  </select>
+  
+  <select id="getWorkData" resultMap="BaseResultMap" parameterType="java.util.Map">
+  	select 
+	  	id, task_name,turn, task_require, 
+	    task_state, executor, expect_start_time, 
+	    actual_start_time, deadline, actual_end_time, 
+	    creat_time, expect_day, actual_day, 
+	    actual_progress, curr_state, 
+	    workload, level, p_id, workratio,test_stage,
+	    task_description, remark,case_day,case_num,
+	    <![CDATA[
+  		IF(expect_start_time<SYSDATE(),((SELECT COUNT(id) FROM workday WHERE 
+	    workday BETWEEN expect_start_time AND IF(SYSDATE()<deadline,SYSDATE(),deadline))/expect_day*100),0) AS expect_progress
+		]]>
+	from 
+    	pm_task
+    where 1=1
+  		<if test="expectMonth != null and expectMonth != ''" >
+	    	<![CDATA[
+	        and deadline > #{expectMonth}
+	        and (expect_start_time < #{expectMonth}
+	    	OR CONVERT(expect_start_time, CHAR) LIKE CONCAT(#{expectMonth}, '%') )]]>
+    	</if>
+    	<if test="actualMonth != null and actualMonth != ''" >
+	    	<![CDATA[
+	        and actual_end_time > #{actualMonth}
+	        and (actual_start_time < #{actualMonth}
+	    	OR CONVERT(actual_start_time, CHAR) LIKE CONCAT(#{actualMonth}, '%') )]]>
+    	</if>
+    	<if test="level !=null" >
+	    	and level =#{level}
+    	</if>
+    order by p_id,expect_start_time DESC
+  </select>
+  
+  <delete id="deleteTask" parameterType="java.lang.String">
+    delete from pm_task
+    where id = #{id}
+  </delete>
+  
+  <delete id="deleteTaskByPId" parameterType="java.lang.String">
+    delete from pm_task
+    where p_id = #{id}
+  </delete>
+  
+  <insert id="addTask" parameterType="com.cszx.pm.model.task.TaskVo">
+    insert into pm_task
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null and id !=''" >
+        id,
+      </if>
+      <if test="pId != null and pId != ''" >
+        p_id,
+      </if>
+      <if test="taskName != null and taskName != ''" >
+        task_name,
+      </if>
+      <if test="turn != null and turn != ''" >
+        turn,
+      </if>
+      <if test="taskRequire != null and taskRequire != ''" >
+        task_require,
+      </if>
+      <if test="taskState != null and taskState != ''" >
+        task_state,
+      </if>
+      <if test="executor != null and executor != ''" >
+        executor,
+      </if>
+      <if test="expectStartTime != null and expectStartTime != ''" >
+        expect_start_time,
+      </if>
+      <if test="actualStartTime != null and actualStartTime != ''" >
+        actual_start_time,
+      </if>
+      <if test="deadline != null and deadline != ''" >
+        deadline,
+      </if>
+      <if test="actualEndTime != null and actualEndTime != ''" >
+        actual_end_time,
+      </if>
+      <if test="creatTime != null and creatTime != ''" >
+        creat_time,
+      </if>
+      <if test="taskDescription != null and taskDescription != ''" >
+        task_description,
+      </if>
+      <if test="remark != null and remark != ''" >
+        remark,
+      </if>
+      <if test="expectDay != null and expectDay != ''" >
+        expect_day,
+      </if>
+      <if test="actualDay != null and actualDay != ''" >
+        actual_day,
+      </if>
+      <if test="actualProgress !=null and actualProgress !=''">
+      	actual_progress,
+      </if>
+      <if test="workload !=null and workload !=''">
+      	workload,
+      </if>
+      <if test="workratio !=null and workratio !=''">
+      	workratio,
+      </if>
+      <if test="level !=null and level !=''">
+      	level,
+      </if>
+      <if test="testStage !=null and testStage !=''">
+      	test_stage,
+      </if>
+      <if test="caseDay != null and caseDay != ''" >
+        case_day,
+      </if>
+      <if test="caseNum != null and caseNum != ''" >
+        case_num
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null and id !=''" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+       <if test="pId != null and pId != ''" >
+        #{pId,jdbcType=VARCHAR},
+      </if>
+      <if test="taskName != null and taskName!=''" >
+        #{taskName,jdbcType=VARCHAR},
+      </if>
+      <if test="turn != null and turn!= ''" >
+        #{turn,jdbcType=VARCHAR},
+      </if>
+      <if test="taskRequire != null and taskRequire != ''" >
+        #{taskRequire,jdbcType=INTEGER},
+      </if>
+      <if test="taskState != null and taskState!=''" >
+        #{taskState,jdbcType=INTEGER},
+      </if>
+      <if test="executor != null and executor != ''" >
+        #{executor,jdbcType=VARCHAR},
+      </if>
+      <if test="expectStartTime != null and expectStartTime != ''" >
+        #{expectStartTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="actualStartTime != null and actualStartTime != ''" >
+        #{actualStartTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deadline != null and deadline != ''" >
+        #{deadline,jdbcType=TIMESTAMP},
+      </if>
+      <if test="actualEndTime != null and actualEndTime != ''" >
+        #{actualEndTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="creatTime != null and creatTime != ''" >
+        #{creatTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="taskDescription != null and taskDescription != ''" >
+        #{taskDescription,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="remark != null and remark != ''" >
+        #{remark,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="expectDay != null and expectDay != ''" >
+        #{expectDay},
+      </if>
+      <if test="actualDay != null and actualDay != ''" >
+        #{actualDay},
+      </if>
+      <if test="actualProgress != null and actualProgress != ''" >
+        #{actualProgress},
+      </if>
+      <if test="workload != null and workload != ''" >
+        #{workload},
+      </if>
+      <if test="workratio != null and workratio!=''" >
+        #{workratio},
+      </if>
+      <if test="level != null and level!=''" >
+        #{level},
+      </if>
+      <if test="testStage != null and testStage!=''" >
+        #{testStage},
+      </if>
+      <if test="caseDay != null and caseDay != ''" >
+        #{caseDay},
+      </if>
+      <if test="caseNum != null and caseNum != ''" >
+        #{caseNum}
+      </if>
+
+    </trim>
+  </insert>
+  <update id="updateTask" parameterType="com.cszx.pm.model.task.TaskVo" >
+    update pm_task
+    <set >
+      <if test="taskName != null and taskName !=''" >
+        task_name = #{taskName,jdbcType=VARCHAR},
+      </if>
+      <if test="taskName ==''" >
+        task_name = null,
+      </if>
+      <if test="turn != null and turn !=''" >
+        turn = #{turn,jdbcType=VARCHAR},
+      </if>
+      <if test="turn ==''" >
+        turn = null,
+      </if>
+      <if test="taskRequire != null and taskRequire !=''" >
+        task_require = #{taskRequire,jdbcType=INTEGER},
+      </if>
+      <if test="taskRequire ==''" >
+        task_require = null,
+      </if>
+      <if test="taskState != null and taskState !=''" >
+        task_state = #{taskState,jdbcType=INTEGER},
+      </if>
+      <if test="taskState ==''" >
+        task_state = null,
+      </if>      
+      <if test="executor != null" >
+        executor = #{executor,jdbcType=VARCHAR},
+      </if>
+      <if test="expectStartTime != null and expectStartTime != ''" >
+        expect_start_time = #{expectStartTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="actualStartTime != null and actualStartTime != ''" >
+        actual_start_time = #{actualStartTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="actualStartTime == ''" >
+        actual_start_time = null,
+      </if>
+      <if test="deadline != null and deadline != ''" >
+        deadline = #{deadline,jdbcType=TIMESTAMP},
+      </if>
+      <if test="actualEndTime != null and actualEndTime != ''" >
+        actual_end_time = #{actualEndTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="actualEndTime ==''" >
+        actual_end_time = null,
+      </if>
+      <if test="creatTime != null and creatTime != ''" >
+        creat_time = #{creatTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="taskDescription != null" >
+        task_description = #{taskDescription,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="remark != null" >
+        remark = #{remark,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="expectDay != null and expectDay != ''" >
+        expect_day=#{expectDay,jdbcType=INTEGER},
+      </if>
+      <if test="expectDay == '' " >
+        expect_day=null,
+      </if>
+      <if test="actualDay != null and actualDay != ''" >
+        actual_day=#{actualDay,jdbcType=INTEGER},
+      </if>
+      <if test="actualDay ==''" >
+        actual_day=null,
+      </if>
+      <if test="actualProgress != null and actualProgress !=''" >
+        actual_progress=#{actualProgress,jdbcType=DOUBLE},
+      </if>
+      <if test="actualProgress ==''" >
+        actual_progress=null,
+      </if>
+      <if test="workload != null and workload != ''" >
+        workload=#{workload,jdbcType=INTEGER},
+      </if>
+      <if test="workload == ''" >
+        workload=null,
+      </if>
+      <if test="workratio != null and workratio != ''" >
+        workratio=#{workratio,jdbcType=DOUBLE},
+      </if>
+       <if test="workratio == ''" >
+        workratio=null,
+      </if>
+      <if test="testStage != null and testStage != ''" >
+        test_stage=#{testStage,jdbcType=INTEGER},
+      </if>
+      <if test="testStage == ''" >
+        test_stage=null,
+      </if>
+      <if test="caseDay != null and caseDay != ''" >
+        case_day=#{caseDay,jdbcType=INTEGER},
+      </if>
+      <if test="caseDay == '' " >
+        case_day=null,
+      </if>
+      <if test="caseNum != null and caseNum != ''" >
+        case_num=#{caseNum,jdbcType=INTEGER}
+      </if>
+      <if test="caseNum == '' " >
+        case_num=null
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <select id="checkRepeat" resultType="java.lang.Boolean" parameterType="java.util.Map">
+  	select
+  		count(id)
+  	from 
+  		pm_task_history
+  	where 
+  		createtime=#{createtime} and task_id=#{taskId}
+  </select>
+  <select id="countWorkLoad" resultType="java.lang.Integer" parameterType="java.lang.String">
+  	select
+  		count(id)
+  	from
+  		pm_task_history
+  	where
+  		task_id=#{taskId}
+  </select>
+  
+  <select id="maxProgress" resultType="java.lang.Double" parameterType="java.lang.String">
+  	select
+  		max(progress)
+  	from
+  		pm_task_history
+  	where
+  		task_id=#{taskId}
+  </select>
+  
+  <select id="selectHistory" resultMap="HistoryMap" parameterType="java.lang.String">
+  	select
+  		id,
+  		createtime,
+  		progress,
+  		remark
+  	from
+  		pm_task_history
+  	where
+  		task_id=#{taskId}
+  	order by createtime desc
+  </select>
+  <insert id="addHistory" parameterType="com.cszx.pm.model.task.TaskHistoryVo">
+  	insert into pm_task_history
+  	<trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id !=null">
+      	id,
+      </if>
+      <if test="taskId !=null">
+      	task_id,
+      </if>
+      <if test="createtime !=null">
+      	createtime,
+      </if>
+      <if test="progress !=null and progress!=''">
+      	progress,
+      </if>
+      <if test="remark !=null">
+      	remark
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id !=null">
+      	#{id},
+      </if>
+      <if test="taskId !=null">
+      	#{taskId},
+      </if>
+      <if test="createtime !=null">
+      	#{createtime},
+      </if>
+      <if test="progress !=null and progress!=''">
+      	#{progress},
+      </if>
+      <if test="remark !=null">
+      	#{remark}
+      </if>
+    </trim>
+  </insert>
+  <update id="updateHistory" parameterType="com.cszx.pm.model.task.TaskHistoryVo">
+  	update pm_task_history
+  	<set>
+        <if test="progress !=null and progress!=''">
+      		progress=#{progress},
+        </if>
+        <if test="progress ==''">
+      		progress=0,
+        </if>
+        <if test="remark !=null">
+      		remark=#{remark}
+        </if>
+  	</set>
+  	where task_id = #{taskId,jdbcType=VARCHAR}
+  	and createtime=#{createtime,jdbcType=VARCHAR}
+  </update>
+  <delete id="deleteHistory" parameterType="java.lang.String">
+  	delete from 
+  		pm_task_history
+    where id = #{id}
+  </delete>
+  <update id="updateTaskActualDay" parameterType="java.lang.String">
+  	UPDATE 
+        pm_task AS ta
+        INNER JOIN (SELECT 
+                        SUM(turn_maxday.d) AS ad,turn_maxday.p_id AS pid
+                    FROM
+                   (SELECT 
+                        MAX(actual_day) AS d ,t.p_id
+                    FROM
+                        pm_task t 
+                    WHERE t.p_id = (SELECT p_id 
+                                    FROM pm_task a 
+                                    WHERE a.id = #{id}) 
+                   GROUP BY t.turn) turn_maxday) s
+      ON ta.id = s.pid
+      SET ta.actual_day = s.ad
+  </update>
+  <update id="updateTaskActualDay2" parameterType="java.lang.String">
+  	UPDATE pm_task t1
+    INNER JOIN
+    (SELECT p_id,IFNULL(actual_day,0) AS ac_day FROM pm_task WHERE id = #{id}) t2
+    ON t1.id = t2.p_id
+    SET t1.actual_day = t1.actual_day-t2.ac_day
+  </update>
+</mapper>

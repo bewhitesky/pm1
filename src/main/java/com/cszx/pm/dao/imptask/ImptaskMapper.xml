@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cszx.pm.dao.imptask.ImptaskDao">
+    <resultMap id="BaseinfoMap" type="com.cszx.pm.model.imptask.Imptask">
+        <id column="id" property="id" jdbcType="VARCHAR" />
+        <result column="imptask_name" property="imptask_name" jdbcType="VARCHAR" />
+        <result column="achievements" property="achievements" jdbcType="VARCHAR" />
+        <result column="imptask_taskcls" property="imptask_taskcls" jdbcType="INTEGER" />
+        <result column="plan" property="plan" jdbcType="LONGVARCHAR" />
+        <result column="p_charge" property="p_charge" jdbcType="VARCHAR" />
+        <result column="imptask_state" property="imptask_state" jdbcType="INTEGER" />
+        <result column="percent" property="percent" jdbcType="VARCHAR"/>
+        <result column="explan" property="explan" jdbcType="LONGVARCHAR" />
+        <result column="remarks" property="remarks" jdbcType="LONGVARCHAR" />
+        <result column="p_complete_time" property="p_complete_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List" >
+    id, imptask_name, achievements,imptask_taskcls,plan,p_charge,imptask_state,percent,explan,remarks,p_complete_time
+    </sql>
+
+    <select id="selectImptask" resultMap="BaseinfoMap" parameterType="java.util.Map">
+        SELECT
+          id,
+          imptask_name,
+          achievements,
+          imptask_taskcls,
+          plan,p_charge,
+          imptask_state,
+          percent,
+          explan,
+          remarks,
+          DATE_FORMAT(p_complete_time,"%Y-%m-%d") AS p_complete_time
+        FROM
+          pm_imptask
+        where 1=1
+        <if test="imptask_taskcls != null and imptask_taskcls !='' ">
+            and imptask_taskcls=#{imptask_taskcls}
+        </if>
+        <if test="imptask_name != null and imptask_name !=''">
+            and imptask_name like concat('%',#{imptask_name},'%')
+        </if>
+        <if test="p_complete_time != null and p_complete_time !=''">
+            and p_complete_time=#{p_complete_time}
+        </if>
+    </select>
+
+    <insert id="addImptask" parameterType="com.cszx.pm.model.imptask.ImptaskVo">
+        insert into pm_imptask
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="id != null">
+                id,
+            </if>
+            <if test="imptask_name != null">
+                imptask_name,
+            </if>
+            <if test="achievements != null">
+                achievements,
+            </if>
+            <if test="imptask_taskcls != null">
+                imptask_taskcls,
+            </if>
+            <if test="plan != null">
+                plan,
+            </if>
+            <if test="p_charge != null">
+                p_charge,
+            </if>
+            <if test="imptask_state != null">
+                imptask_state,
+            </if>
+            <if test="percent != null">
+                percent,
+            </if>
+            <if test="explan != null">
+                explan,
+            </if>
+            <if test="remarks != null">
+                remarks,
+            </if>
+            <if test="p_complete_time != null">
+                p_complete_time
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="imptask_name != null" >
+                #{imptask_name,jdbcType=VARCHAR},
+            </if>
+            <if test="achievements != null" >
+                #{achievements,jdbcType=VARCHAR},
+            </if>
+            <if test="imptask_taskcls != null">
+                #{imptask_taskcls,jdbcType=INTEGER},
+            </if>
+            <if test="plan != null" >
+                #{plan,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="p_charge != null" >
+                #{p_charge,jdbcType=VARCHAR},
+            </if>
+            <if test="imptask_state != null" >
+                #{imptask_state,jdbcType=INTEGER},
+            </if>
+            <if test="percent != null" >
+                #{percent,jdbcType=VARCHAR},
+            </if>
+            <if test="explan != null" >
+                #{explan,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="remarks != null" >
+                #{remarks,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="p_complete_time != null" >
+                #{p_complete_time,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateImptask" parameterType="com.cszx.pm.model.imptask.ImptaskVo">
+        update pm_imptask
+        <set>
+            <if test="imptask_name != null" >
+                imptask_name= #{imptask_name,jdbcType=VARCHAR},
+            </if>
+            <if test="achievements != null" >
+                achievements =#{achievements,jdbcType=VARCHAR},
+            </if>
+            <if test="imptask_taskcls != null">
+                imptask_taskcls= #{imptask_taskcls,jdbcType=INTEGER},
+            </if>
+            <if test="plan != null" >
+                plan = #{plan,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="p_charge != null" >
+                p_charge=#{p_charge,jdbcType=VARCHAR},
+            </if>
+            <if test="imptask_state != null" >
+                imptask_state =#{imptask_state,jdbcType=INTEGER},
+            </if>
+            <if test="percent != null" >
+                percent= #{percent,jdbcType=VARCHAR},
+            </if>
+            <if test="explan != null" >
+                explan= #{explan,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="remarks != null" >
+                remarks= #{remarks,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="p_complete_time != null" >
+                p_complete_time= #{p_complete_time,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id=#{id,jdbcType=VARCHAR}
+    </update>
+
+    <delete id="deleteImptask"  parameterType="java.util.List">
+        delete from pm_imptask where id in
+        <foreach close=")" collection="list" item="id" open="(" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+
+
+</mapper>

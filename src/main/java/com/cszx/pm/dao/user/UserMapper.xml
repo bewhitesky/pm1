@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cszx.pm.dao.user.UserDao" >
+  <resultMap id="BaseResultMap" type="com.cszx.pm.model.user.User" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="LOGIN_ID" property="loginId" jdbcType="VARCHAR" />
+    <result column="LOGIN_PASSWORD" property="loginPassword" jdbcType="VARCHAR" />
+    <result column="USER_NAME" property="userName" jdbcType="VARCHAR" />
+    <result column="USER_TEL" property="userTel" jdbcType="VARCHAR" />
+    <result column="USER_EMAIL" property="userEmail" jdbcType="VARCHAR" />
+    <result column="LOGIN_TIME" property="loginTime" jdbcType="TIMESTAMP" />
+    <result column="USER_LEVEL" property="userLevel" jdbcType="INTEGER" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.cszx.pm.model.user.User" extends="BaseResultMap" >
+    <result column="LOGIN_IP" property="loginIp" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <resultMap id="ResultMap" type="com.cszx.pm.model.user.User" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="LOGIN_ID" property="loginId" jdbcType="VARCHAR" />
+    <result column="USER_NAME" property="userName" jdbcType="VARCHAR" />
+    <result column="USER_TEL" property="userTel" jdbcType="VARCHAR" />
+    <result column="USER_EMAIL" property="userEmail" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, LOGIN_ID, LOGIN_PASSWORD, USER_NAME, USER_TEL, USER_EMAIL, LOGIN_TIME, USER_LEVEL
+  </sql>
+  <sql id="Blob_Column_List" >
+    LOGIN_IP
+  </sql>
+  
+  <select id="getUserByLoginId" resultMap="ResultMapWithBLOBs" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from pm_user
+    where LOGIN_ID = #{loginId,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="getUsers" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from pm_user
+  </select>
+  
+  <select id="selectUsers" parameterType="java.util.Map" resultMap="ResultMap">
+  	select
+  		ID,LOGIN_ID,USER_NAME,USER_TEL,USER_EMAIL
+  	from pm_user
+  	where 1=1
+  	<if test="loginId != null and loginId !=''">
+  		and LOGIN_ID  LIKE CONCAT(CONCAT('%', #{loginId}), '%')
+  	</if>
+  	<if test="userName != null and userName !=''">
+  		and USER_NAME LIKE CONCAT(CONCAT('%', #{userName}), '%')
+  	</if>
+  </select>
+  
+  <insert id="insert" parameterType="com.cszx.pm.model.user.User" >
+    insert into pm_user 
+      <trim prefix="(" suffix=")" suffixOverrides="," >
+      	<if test="id != null and id !=''" >
+      		ID,
+      	</if>
+      	<if test="loginId != null and loginId !=''" >
+      		LOGIN_ID,
+      	</if>
+      	<if test="loginPassword != null and loginPassword !=''" >
+      		LOGIN_PASSWORD,
+      	</if>
+      	<if test="userName != null and userName !=''" >
+      		USER_NAME,
+      	</if>
+      	<if test="userTel != null and userTel !=''" >
+      		USER_TEL,
+      	</if>
+      	<if test="userEmail != null and userEmail !=''" >
+      		USER_EMAIL,
+      	</if>
+      	<if test="loginTime != null and loginTime !=''" >
+      		LOGIN_TIME,
+      	</if>
+      	<if test="userLevel != null and userLevel !=''" >
+      		USER_LEVEL,
+      	</if>
+      	<if test="loginIp != null and loginIp !=''" >
+      		LOGIN_IP
+      	</if>  
+    </trim>
+      values
+      <trim prefix="(" suffix=")" suffixOverrides="," >
+      	<if test="id != null and id !=''" >
+      		#{id,jdbcType=VARCHAR},
+      	</if>
+      	<if test="loginId != null and loginId !=''" >
+      		#{loginId,jdbcType=VARCHAR},
+      	</if>
+      	<if test="loginPassword != null and loginPassword !=''" >
+      		#{loginPassword,jdbcType=VARCHAR},
+      	</if>
+      	<if test="userName != null and userName !=''" >
+      		#{userName,jdbcType=VARCHAR},
+      	</if>
+      	<if test="userTel != null and userTel !=''" >
+      		#{userTel,jdbcType=VARCHAR},
+      	</if>
+      	<if test="userEmail != null and userEmail !=''" >
+      		#{userEmail,jdbcType=VARCHAR},
+      	</if>
+      	<if test="loginTime != null and loginTime !=''" >
+      		#{loginTime,jdbcType=TIMESTAMP},
+      	</if>
+      	<if test="userLevel != null and userLevel !=''" >
+      		#{userLevel,jdbcType=INTEGER},
+      	</if>
+      	<if test="loginIp != null and loginIp !=''" >
+      		#{loginIp,jdbcType=LONGVARCHAR}
+      	</if>  
+    </trim>
+  </insert>
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.cszx.pm.model.user.User" >
+    update pm_user
+    <set >
+      <if test="loginId != null" >
+        LOGIN_ID = #{loginId,jdbcType=VARCHAR},
+      </if>
+      <if test="loginPassword != null" >
+        LOGIN_PASSWORD = #{loginPassword,jdbcType=VARCHAR},
+      </if>
+      <if test="userName != null" >
+        USER_NAME = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="userTel != null" >
+        USER_TEL = #{userTel,jdbcType=VARCHAR},
+      </if>
+      <if test="userEmail != null" >
+        USER_EMAIL = #{userEmail,jdbcType=VARCHAR},
+      </if>
+      <if test="loginTime != null" >
+        LOGIN_TIME = #{loginTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userLevel != null" >
+        USER_LEVEL = #{userLevel,jdbcType=INTEGER},
+      </if>
+      <if test="loginIp != null" >
+        LOGIN_IP = #{loginIp,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+ 
+  <insert id="insertUsers" parameterType="java.util.List">
+  	insert into pm_user
+	    <trim prefix="(" suffix=")" suffixOverrides="," >
+	        ID,	 
+	        LOGIN_ID,
+	        USER_NAME
+	    </trim>	
+	    values 
+	  <foreach collection="list" item="item" index="index" separator=",">  
+      <trim prefix="(" suffix=")" suffixOverrides="," >
+      	<if test="item.id != null and item.id !=''" >
+      		#{item.id,jdbcType=VARCHAR},
+      	</if>
+      	<if test="item.loginId != null and item.loginId !=''" >
+      		#{item.loginId,jdbcType=VARCHAR},
+      	</if>
+      	<if test="item.loginPassword != null and item.loginPassword !=''" >
+      		#{item.loginPassword,jdbcType=VARCHAR},
+      	</if>
+      	<if test="item.userName != null and item.userName !=''" >
+      		#{item.userName,jdbcType=VARCHAR},
+      	</if>
+      	<if test="item.userTel != null and item.userTel !=''" >
+      		#{item.userTel,jdbcType=VARCHAR},
+      	</if>
+      	<if test="item.userEmail != null and item.userEmail !=''" >
+      		#{item.userEmail,jdbcType=VARCHAR},
+      	</if>
+      	<if test="item.loginTime != null and item.loginTime !=''" >
+      		#{item.loginTime,jdbcType=TIMESTAMP},
+      	</if>
+      	<if test="item.userLevel != null and item.userLevel !=''" >
+      		#{item.userLevel,jdbcType=INTEGER},
+      	</if>
+      	<if test="item.loginIp != null and item.loginIp !=''" >
+      		#{item.loginIp,jdbcType=LONGVARCHAR}
+      	</if>  
+    </trim>
+    </foreach> 
+  </insert>
+  
+  <delete id="deleteUsers" parameterType="java.util.List">
+  	delete from pm_user where ID in
+  	<foreach item="id" collection="list" open="(" close=")" separator=",">
+  		#{id}
+  	</foreach>
+  </delete>
+</mapper>

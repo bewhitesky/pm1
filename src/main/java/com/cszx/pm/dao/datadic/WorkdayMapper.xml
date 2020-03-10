@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cszx.pm.dao.datadic.WorkdayDao" >
+  <resultMap id="BaseResultMap" type="com.cszx.pm.model.datadic.Workday" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="workday" property="workday" jdbcType="DATE" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, workday
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from workday
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <insert id="insert" parameterType="com.cszx.pm.model.datadic.Workday">
+	INSERT INTO workday (workday)
+      values 
+	<foreach collection="list" index="index" item="item" separator=",">  
+      <trim prefix="(" suffix=")" suffixOverrides=",">
+      	<if test="item != null">
+      		#{item},
+      	</if>
+       </trim>
+    </foreach> 
+  </insert>
+
+</mapper>

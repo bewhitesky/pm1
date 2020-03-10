@@ -1,0 +1,597 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cszx.pm.dao.project.BaseInfoDao">
+  <resultMap id="BaseResultMap" type="com.cszx.pm.model.project.BaseInfo">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="p_department" jdbcType="INTEGER" property="pDepartment" />
+    <result column="p_name" jdbcType="VARCHAR" property="pName" />
+    <result column="product_name" jdbcType="VARCHAR" property="productName" />
+    <result column="p_type" jdbcType="INTEGER" property="pType" />
+    <result column="test_type" jdbcType="VARCHAR" property="testType" />
+    <result column="p_level" jdbcType="INTEGER" property="pLevel" />
+    <result column="internal_time" jdbcType="TIMESTAMP" property="internalTime" />
+    <result column="factory_time" jdbcType="TIMESTAMP" property="factoryTime" />
+    <result column="third_time" jdbcType="TIMESTAMP" property="thirdTime" />
+    <result column="demand_exp_time" jdbcType="TIMESTAMP" property="demandExpTime" />
+    <result column="demand_act_time" jdbcType="TIMESTAMP" property="demandActTime" />
+    <result column="design_exp_time" jdbcType="TIMESTAMP" property="designExpTime" />
+    <result column="design_act_time" jdbcType="TIMESTAMP" property="designActTime" />    
+    <result column="test_year" jdbcType="VARCHAR" property="testYear" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="pm_name" jdbcType="VARCHAR" property="pmName" />
+    <result column="pm_tel" jdbcType="VARCHAR" property="pmTel" />
+    <result column="pm_email" jdbcType="VARCHAR" property="pmEmail" />
+    <result column="third_test" jdbcType="INTEGER" property="thirdTest" />
+    <result column="d_org" jdbcType="INTEGER" property="dorg" />
+    <result column="code_check" jdbcType="INTEGER" property="codeCheck" />
+    <result column="test_state" jdbcType="VARCHAR" property="testState" />
+  </resultMap>
+  
+  <resultMap id="RemainDayMap" type="com.cszx.pm.model.project.RemainDay">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="remain_day" jdbcType="VARCHAR" property="remainDay" />
+    <result column="p_name" jdbcType="VARCHAR" property="pName" />
+    <result column="product_name" jdbcType="VARCHAR" property="productName" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="pm_name" jdbcType="VARCHAR" property="pmName" />
+    <result column="pm_tel" jdbcType="VARCHAR" property="pmTel" />
+    <result column="pm_email" jdbcType="VARCHAR" property="pmEmail" />
+    <result column="demand_exp_time" jdbcType="TIMESTAMP" property="demandExpTime" />
+    <result column="design_exp_time" jdbcType="TIMESTAMP" property="designExpTime" />
+    <result column="internal_time" jdbcType="TIMESTAMP" property="internalTime" />
+    <result column="factory_time" jdbcType="TIMESTAMP" property="factoryTime" />
+    <result column="third_time" jdbcType="TIMESTAMP" property="thirdTime" />
+    <result column="p_department" jdbcType="INTEGER" property="pDepartment" />
+    <result column="p_type" jdbcType="INTEGER" property="pType" />
+    <result column="test_type" jdbcType="VARCHAR" property="testType" />
+    <result column="p_level" jdbcType="INTEGER" property="pLevel" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, p_department, p_name, product_name, p_type, test_type, p_level, internal_time, 
+    factory_time,demand_exp_time,demand_act_time,design_exp_time,design_act_time, 
+    third_time, test_year, remark,pm_name,pm_tel,pm_email,third_test
+  </sql>
+
+  <insert id="insertBaseInfos" parameterType="com.cszx.pm.model.project.BaseInfo">
+	insert into pm_base_info (id, p_department, p_name, 
+      product_name, p_type, test_type, 
+      p_level, internal_time, factory_time, 
+      third_time,test_year, remark,pm_name,pm_tel,pm_email,third_test
+      )
+      values 
+	  <foreach collection="list" index="index" item="item" separator=",">  
+      <trim prefix="(" suffix=")" suffixOverrides=",">
+      	<if test="item.id != null">
+      		#{item.id},
+      	</if>
+      	<if test="item.pDepartment != null">
+      		#{item.pDepartment},
+      	</if>
+      	<if test="item.pName != null ">
+      		#{item.pName},
+      	</if>
+      	<if test="item.productName != null ">
+      		#{item.productName},
+      	</if>
+      	<if test="item.pType != null">
+      		#{item.pType},
+      	</if>
+      	<if test="item.testType != null">
+      		#{item.testType},
+      	</if>
+      	<if test="item.pLevel != null">
+      		#{item.pLevel},
+      	</if>
+      	<if test="item.internalTime != null and item.internalTime !=''">
+      		#{item.internalTime,jdbcType=TIMESTAMP},
+      	</if>
+      	<if test="item.factoryTime != null and item.factoryTime !=''">
+      		#{item.factoryTime,jdbcType=TIMESTAMP},
+      	</if>
+      	<if test="item.thirdTime != null and item.thirdTime !=''">
+      		#{item.thirdTime,jdbcType=TIMESTAMP},
+      	</if>  
+      	<if test="item.testYear != null">
+      		#{item.testYear},
+      	</if>
+      	<if test="item.remark != null">
+      		#{item.remark},
+      	</if>
+      	<if test="item.pmName != null">
+      		#{item.pmName},
+      	</if>
+      	<if test="item.pmTel != null">
+      		#{item.pmTel},
+      	</if>
+      	<if test="item.pmEmail != null">
+      		#{item.pmEmail},
+      	</if>
+      	<if test="item.thirdTest != null">
+      		#{item.thirdTest}
+      	</if>    
+    </trim>
+    </foreach> 
+  </insert>
+  <insert id="addBaseInfo" parameterType="com.cszx.pm.model.project.BaseInfo">
+    insert into pm_base_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="pDepartment != null">
+        p_department,
+      </if>
+      <if test="dorg != null">
+        d_org,
+      </if>
+      <if test="pName != null">
+        p_name,
+      </if>
+      <if test="productName != null">
+        product_name,
+      </if>
+      <if test="pType != null">
+        p_type,
+      </if>
+      <if test="testType != null">
+        test_type,
+      </if>
+      <if test="pLevel != null">
+        p_level,
+      </if>
+      <if test="internalTime != null and internalTime != ''">
+        internal_time,
+      </if>
+      <if test="factoryTime != null and factoryTime != ''">
+        factory_time,
+      </if>
+      <if test="thirdTime != null and thirdTime != ''">
+        third_time,
+      </if>
+      <if test="demandExpTime != null and demandExpTime != ''">
+        demand_exp_time,
+      </if>
+      <if test="demandActTime != null and demandActTime != ''">
+        demand_act_time,
+      </if>
+      <if test="designExpTime != null and designExpTime != ''">
+        design_exp_time,
+      </if>
+      <if test="designActTime != null and designActTime != ''">
+        design_act_time,
+      </if>
+      <if test="testYear != null">
+        test_year,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="pmName != null">
+      	pm_name,
+      </if>
+      <if test="pmTel != null">
+      	pm_tel,
+      </if>
+      <if test="pmEmail != null">
+      	pm_email,
+      </if>
+      <if test="thirdTest != null">
+      	third_test
+      </if>  
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="pDepartment != null">
+        #{pDepartment,jdbcType=INTEGER},
+      </if>
+      <if test="dorg != null">
+        #{dorg,jdbcType=INTEGER},
+      </if>
+      <if test="pName != null">
+        #{pName,jdbcType=VARCHAR},
+      </if>
+      <if test="productName != null">
+        #{productName,jdbcType=VARCHAR},
+      </if>
+      <if test="pType != null">
+        #{pType,jdbcType=INTEGER},
+      </if>
+      <if test="testType != null">
+        #{testType,jdbcType=VARCHAR},
+      </if>
+      <if test="pLevel != null">
+        #{pLevel,jdbcType=INTEGER},
+      </if>
+      <if test="internalTime != null and internalTime != ''">
+        #{internalTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="factoryTime != null and factoryTime != ''">
+        #{factoryTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="thirdTime != null and thirdTime != ''">
+        #{thirdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="demandExpTime != null and demandExpTime != ''">
+        #{demandExpTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="demandActTime != null and demandActTime != ''">
+        #{demandActTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="designExpTime != null and designExpTime != ''">
+        #{designExpTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="designActTime != null and designActTime != ''">
+        #{designActTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="testYear != null">
+        #{testYear,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="pmName != null">
+        #{pmName,jdbcType=VARCHAR},
+      </if>
+      <if test="pmTel != null">
+        #{pmTel,jdbcType=VARCHAR},
+      </if>
+      <if test="pmEmail != null">
+        #{pmEmail,jdbcType=VARCHAR},
+      </if>
+      <if test="thirdTest != null">
+      	#{thirdTest,jdbcType=INTEGER}
+      </if> 
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cszx.pm.model.project.BaseInfo">
+    update pm_base_info
+    <set>
+      <if test="pDepartment != null">
+        p_department = #{pDepartment,jdbcType=INTEGER},
+      </if>
+      <if test="dorg != null">
+        d_org = #{dorg,jdbcType=INTEGER},
+      </if>
+      <if test="pName != null">
+        p_name = #{pName,jdbcType=VARCHAR},
+      </if>
+      <if test="productName != null">
+        product_name = #{productName,jdbcType=VARCHAR},
+      </if>
+      <if test="pType != null">
+        p_type = #{pType,jdbcType=INTEGER},
+      </if>
+      <if test="testType != null">
+        test_type = #{testType,jdbcType=VARCHAR},
+      </if>
+      <if test="pLevel != null">
+        p_level = #{pLevel,jdbcType=INTEGER},
+      </if>
+      <if test="internalTime != null and internalTime !=''">
+        internal_time = #{internalTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="factoryTime != null and factoryTime !=''">
+        factory_time = #{factoryTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="thirdTime != null and thirdTime != ''">
+        third_time = #{thirdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="demandExpTime != null and demandExpTime != ''">
+        demand_exp_time=#{demandExpTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="demandActTime != null and demandActTime != ''">
+        demand_act_time=#{demandActTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="designExpTime != null and designExpTime != ''">
+        design_exp_time=#{designExpTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="designActTime != null and designActTime != ''">
+        design_act_time=#{designActTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="internalTime ==''">
+        internal_time =NULL,
+      </if>
+      <if test="factoryTime ==''">
+        factory_time =NULL,
+      </if>
+      <if test="thirdTime == ''">
+        third_time =NULL,
+      </if>
+      <if test="demandExpTime == ''">
+        demand_exp_time=NULL,
+      </if>
+      <if test="demandActTime == ''">
+        demand_act_time=NULL,
+      </if>
+      <if test="designExpTime == ''">
+        design_exp_time=NULL,
+      </if>
+      <if test="designActTime == ''">
+        design_act_time=NULL,
+      </if>
+      <if test="testYear != null">
+        test_year = #{testYear,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="pmName != null">
+        pm_name = #{pmName,jdbcType=VARCHAR},
+      </if>
+      <if test="pmTel != null">
+        pm_tel = #{pmTel,jdbcType=VARCHAR},
+      </if>
+      <if test="pmEmail != null">
+        pm_email = #{pmEmail,jdbcType=VARCHAR},
+      </if>
+      <if test="thirdTest != null">
+        third_test = #{thirdTest,jdbcType=INTEGER}
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <select id="getTestStateById" resultType="java.lang.String" parameterType="java.lang.String">
+  	 SELECT p.test_state
+	 FROM 
+	 	pm_base_info b,
+	 	pm_external_progress p
+	 WHERE b.id=p.base_info_id
+	 and b.id=#{id}
+  </select>
+  
+  <select id="selectBaseInfo" parameterType="java.util.Map" resultMap="BaseResultMap">
+	SELECT 
+	      b.id, b.p_department, b.p_name, 
+	      b.product_name, b.p_type, b.test_type, 
+	      b.p_level, b.internal_time, b.factory_time, 
+	      b.third_time, b.demand_exp_time, b.demand_act_time, b.design_exp_time, b.design_act_time,
+	      b.test_year, b.remark, b.pm_name, b.pm_tel, b.pm_email, b.third_test, b.d_org, b.code_check, p.test_state
+	FROM 
+		 pm_base_info b 
+	LEFT JOIN
+		 pm_external_progress p
+		 ON b.id=p.base_info_id
+	where 1=1
+  	<if test="pDepartment != null ">
+  		and p_department=#{pDepartment}
+  	</if>
+  	<if test="dorg != null ">
+  		and d_org=#{dorg}
+  	</if>
+  	<if test="pType != null ">
+  		and p_type=#{pType}
+  	</if>
+  	<if test="pName != null and pName !=''">
+  		and product_name like concat('%',#{pName},'%')
+  	</if>
+  	<if test="testYear != null and testYear !=''">
+  		and test_year=#{testYear}
+  	</if>
+  	<if test="internalStartTime != null and internalStartTime !=''">
+  		and internal_time &gt;=#{internalStartTime}
+  	</if>
+  	<if test="internalEndTime != null and internalEndTime !=''">
+  	<![CDATA[
+  		and internal_time <= #{internalEndTime}
+  	]]>	
+  	</if>
+  	 	<if test="factoryStartTime != null and factoryStartTime !=''">
+  		and factory_time &gt;=#{factoryStartTime,jdbcType=TIMESTAMP}
+  	</if>
+  	<if test="factoryEndTime != null and factoryEndTime !=''">
+  	<![CDATA[
+  		and factory_time <= #{factoryEndTime}
+  	]]>	
+  	</if>
+  	 	<if test="thirdStartTime != null and thirdStartTime !=''">
+  		and third_time &gt;=#{thirdStartTime,jdbcType=TIMESTAMP}
+  	</if>
+  	<if test="thirdEndTime != null and thirdEndTime !=''">
+  	<![CDATA[
+  		and third_time <= #{thirdEndTime}
+  	]]>	
+  	</if>
+  	<if test="testState != null and testState !=''">
+  		and p.test_state=#{testState}
+  	</if>
+  	<if test="testState == null or testState ==''">
+  		and ((p.test_state != "测试完成" and p.test_state != "终止") OR p.test_state IS NULL)
+  	</if>
+  	ORDER BY internal_time DESC
+  </select>
+  
+  <select id="getPnames" resultMap="BaseResultMap">
+  	select
+  		id,
+  		product_name
+  	from
+  		pm_base_info
+  	WHERE 
+		test_year=YEAR(CURDATE())
+	ORDER BY internal_time DESC
+  </select>
+  
+  <select id="getPnameList" resultMap="BaseResultMap" parameterType="com.cszx.pm.model.project.BaseInfo">
+  	select
+  		id,
+  		p_name
+  	from
+  		pm_base_info
+  	where 1=1
+  	<if test="pName != null and pName !=''">
+  		and p_name = #{pName}
+  	</if>
+  	<if test="id != null and id !=''">
+  		and id != #{id}
+  	</if>
+  </select>
+  
+  <select id="selectBaseInfoById" parameterType="java.lang.String" resultMap="BaseResultMap">
+  	select 
+    	id, p_department, p_name, 
+      product_name, p_type, test_type, 
+      p_level, internal_time, factory_time, 
+      third_time, demand_exp_time, demand_act_time, design_exp_time, design_act_time,
+      test_year, remark,pm_name,pm_tel,pm_email,third_test
+    from pm_base_info
+  	where id=#{id}
+  </select>
+  
+  <select id="countPname" resultType="java.lang.Integer" parameterType="java.lang.String">
+  	select 
+  		count(id)
+  	from 
+  		pm_base_info
+  	where  p_name = #{pName}
+
+  </select>
+  <select id="getTestType" resultType="java.lang.String" parameterType="java.lang.String">
+  	select
+  		test_type
+  	from
+  		pm_base_info
+  	where id=#{id}
+  </select>
+  
+  <select id="countRemainDay" resultMap="RemainDayMap" parameterType="java.util.Map">
+  	<if test="today != null and today != ''" >
+  	SELECT 
+  	    id,
+	  	TIMESTAMPDIFF(DAY,#{today},internal_time) AS remain_day,
+		"内部测试" AS TYPE,
+		p_name,
+		product_name,
+		pm_name,
+		pm_tel,
+		pm_email,
+		demand_exp_time,
+		design_exp_time,
+		internal_time,
+		factory_time,
+		third_time,
+		p_department,
+		p_type,
+		test_type,
+		p_level
+	FROM
+		pm_base_info
+	WHERE 1=1
+	 	and internal_time BETWEEN #{today} AND DATE_ADD(#{today},INTERVAL 7 DAY)
+	UNION
+	SELECT 
+		id,
+		TIMESTAMPDIFF(DAY,#{today},factory_time) AS remain_day,
+		"出厂测试" AS TYPE,
+		p_name,
+		product_name,
+		pm_name,
+		pm_tel,
+		pm_email,
+		demand_exp_time,
+		design_exp_time,
+		internal_time,
+		factory_time,
+		third_time,
+		p_department,
+		p_type,
+		test_type,
+		p_level 
+	FROM
+		pm_base_info
+	WHERE  1=1
+	    	and factory_time BETWEEN #{today} AND DATE_ADD(#{today},INTERVAL 7 DAY)
+	UNION
+	SELECT
+		id, 
+		TIMESTAMPDIFF(DAY,#{today},third_time) AS remain_day,
+		"三方测试" AS TYPE,
+		p_name,
+		product_name,
+		pm_name,
+		pm_tel,
+		pm_email,
+		demand_exp_time,
+		design_exp_time,
+		internal_time,
+		factory_time,
+		third_time,
+		p_department,
+		p_type,
+		test_type,
+		p_level 
+	FROM
+		pm_base_info
+	WHERE  1=1
+	    	and third_time BETWEEN #{today} AND DATE_ADD(#{today},INTERVAL 7 DAY)
+	UNION
+	SELECT
+		id, 
+		TIMESTAMPDIFF(DAY,#{today},demand_exp_time) AS remain_day,
+		"需求完成" AS TYPE,
+		p_name,
+		product_name,
+		pm_name,
+		pm_tel,
+		pm_email,
+		demand_exp_time,
+		design_exp_time,
+		internal_time,
+		factory_time,
+		third_time,
+		p_department,
+		p_type,
+		test_type,
+		p_level 
+	FROM
+		pm_base_info
+	WHERE  1=1
+	    	and demand_exp_time BETWEEN #{today} AND DATE_ADD(#{today},INTERVAL 7 DAY)
+	UNION
+	SELECT 
+		id,
+		TIMESTAMPDIFF(DAY,#{today},design_exp_time) AS remain_day,
+		"概设完成" AS TYPE,
+		p_name,
+		product_name,
+		pm_name,
+		pm_tel,
+		pm_email,
+		demand_exp_time,
+		design_exp_time,
+		internal_time,
+		factory_time,
+		third_time,
+		p_department,
+		p_type,
+		test_type,
+		p_level 
+	FROM
+		pm_base_info
+	WHERE  1=1
+	    	and design_exp_time BETWEEN #{today} AND DATE_ADD(#{today},INTERVAL 7 DAY)
+    </if>
+  </select>
+  
+  <delete id="deleteBaseInfo" parameterType="java.util.List">
+  	delete from pm_base_info where ID in
+  	<foreach close=")" collection="list" item="id" open="(" separator=",">
+  		#{id}
+  	</foreach>
+  </delete>
+  
+  <select id="checkInternalExist" resultType="java.lang.Boolean" parameterType="java.util.Map">
+  	SELECT
+		COUNT(id)
+	FROM pm_internal_test
+	WHERE 1=1
+	<if test="id !=null and id!=''">
+		and	base_info_id=#{id}
+	</if>
+	<if test="testItem !=null and testItem !=''">
+		and test_item=#{testItem}
+	</if>
+  </select>
+</mapper>

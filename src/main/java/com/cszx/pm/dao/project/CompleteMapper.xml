@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cszx.pm.dao.project.CompleteDao" >
+  <resultMap id="BaseResultMap" type="com.cszx.pm.model.project.Complete" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="base_info_id" property="baseInfoId" jdbcType="VARCHAR" />
+    <result column="factory_function" property="factoryFunction" jdbcType="DOUBLE" />
+    <result column="fac_fun_times" property="facFunTimes" jdbcType="DOUBLE" />
+    <result column="fac_fun_two_passed" property="facFunTwoPassed" jdbcType="DOUBLE" />
+    <result column="factory_security" property="factorySecurity" jdbcType="DOUBLE" />
+    <result column="fac_security_times" property="facSecurityTimes" jdbcType="DOUBLE" />
+    <result column="fac_security_two_passed" property="facSecurityTwoPassed" jdbcType="DOUBLE" />
+    <result column="factory_code" property="factoryCode" jdbcType="DOUBLE" />
+    <result column="factory_schema" property="factorySchema" jdbcType="DOUBLE" />
+    <result column="third_function" property="thirdFunction" jdbcType="DOUBLE" />
+    <result column="third_fun_times" property="thirdFunTimes" jdbcType="DOUBLE" />
+    <result column="third_fun_two_passed" property="thirdFunTwoPassed" jdbcType="DOUBLE" />
+    <result column="third_security" property="thirdSecurity" jdbcType="DOUBLE" />
+    <result column="third_security_times" property="thirdSecurityTimes" jdbcType="DOUBLE" />
+    <result column="third_security_two_passed" property="thirdSecurityTwoPassed" jdbcType="DOUBLE" />
+    <result column="third_code" property="thirdCode" jdbcType="DOUBLE" />
+    <result column="third_schema" property="thirdSchema" jdbcType="DOUBLE" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, base_info_id, factory_function, factory_security, factory_two_passed, factory_code, 
+    factory_schema, third_function, third_security, third_code, third_schema
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from pm_external_complete
+    where id = #{id,jdbcType=VARCHAR}
+  </select> 
+  
+  <select id="average" resultMap="BaseResultMap" >
+    select
+    	"average" AS id,
+    	"average" AS base_info_id,
+	    AVG(factory_function) as factory_function,
+	    AVG(fac_fun_times) as fac_fun_times,
+	    AVG(fac_fun_two_passed) as fac_fun_two_passed,
+		AVG(factory_security) as factory_security,
+		AVG(fac_security_times) as fac_security_times,
+		AVG(fac_security_two_passed) as fac_security_two_passed,
+		AVG(factory_code) as factory_code,
+		AVG(factory_schema) as factory_schema,
+		AVG(third_function) as third_function,
+		AVG(third_fun_times) as third_fun_times,
+		AVG(third_fun_two_passed) as third_fun_two_passed,	
+		AVG(third_security) as third_security,
+		AVG(third_security_times) as third_security_times,
+		AVG(third_security_two_passed) as third_security_two_passed,
+		AVG(third_code) as third_code,
+		AVG(third_schema) as third_schema
+    from pm_external_complete
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from pm_external_complete
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+    <delete id="deleteByBaseInfoId" parameterType="java.util.List">
+  	delete from pm_external_complete where base_info_id in
+  	<foreach close=")" collection="list" item="id" open="(" separator=",">
+  		#{id}
+  	</foreach>
+  </delete>
+  <insert id="insert" parameterType="com.cszx.pm.model.project.Complete" >
+    insert into pm_external_complete (id, base_info_id, factory_function, 
+      factory_security, factory_two_passed, factory_code, 
+      factory_schema, third_function, third_security, 
+      third_code, third_schema)
+    values (#{id,jdbcType=VARCHAR}, #{baseInfoId,jdbcType=VARCHAR}, #{factoryFunction,jdbcType=DOUBLE}, 
+      #{factorySecurity,jdbcType=DOUBLE}, #{factoryTwoPassed,jdbcType=DOUBLE}, #{factoryCode,jdbcType=DOUBLE}, 
+      #{factorySchema,jdbcType=DOUBLE}, #{thirdFunction,jdbcType=DOUBLE}, #{thirdSecurity,jdbcType=DOUBLE}, 
+      #{thirdCode,jdbcType=DOUBLE}, #{thirdSchema,jdbcType=DOUBLE})
+  </insert>
+  
+  <insert id="insertSelective" parameterType="com.cszx.pm.model.project.Complete" >
+    insert into pm_external_complete
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="baseInfoId != null" >
+        base_info_id,
+      </if>
+      <if test="factoryFunction != null" >
+        factory_function,
+      </if>
+      <if test="facFunTimes != null" >
+        fac_fun_times,
+      </if>
+      <if test="facFunTwoPassed != null" >
+        fac_fun_two_passed,
+      </if>   
+      <if test="factorySecurity != null" >
+        factory_security,
+      </if>
+      <if test="facSecurityTimes != null" >
+        fac_security_times,
+      </if>
+      <if test="facSecurityTwoPassed != null" >
+        fac_security_two_passed,
+      </if>
+      <if test="factoryCode != null" >
+        factory_code,
+      </if>
+      <if test="factorySchema != null" >
+        factory_schema,
+      </if> 
+      <if test="thirdFunction != null" >
+        third_function,
+      </if>
+      <if test="thirdFunTimes != null" >
+        third_fun_times,
+      </if>
+      <if test="thirdFunTwoPassed != null" >
+        third_fun_two_passed,
+      </if>  
+      <if test="thirdSecurity != null" >
+        third_security,
+      </if>
+      <if test="thirdSecurityTimes != null" >
+        third_security_times,
+      </if>
+      <if test="thirdSecurityTwoPassed != null" >
+        third_security_two_passed,
+      </if>
+      
+      <if test="thirdCode != null" >
+        third_code,
+      </if>
+      <if test="thirdSchema != null" >
+        third_schema,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="baseInfoId != null" >
+        #{baseInfoId,jdbcType=VARCHAR},
+      </if>
+      <if test="factoryFunction != null" >
+        #{factoryFunction,jdbcType=DOUBLE},
+      </if>
+      <if test="facFunTimes != null" >
+        #{facFunTimes,jdbcType=DOUBLE},
+      </if>
+      <if test="facFunTwoPassed != null" >
+        #{facFunTwoPassed,jdbcType=DOUBLE},
+      </if>    
+      <if test="factorySecurity != null" >
+        #{factorySecurity,jdbcType=DOUBLE},
+      </if>
+      <if test="facSecurityTimes != null" >
+        #{facSecurityTimes,jdbcType=DOUBLE},
+      </if>
+      <if test="facSecurityTwoPassed != null" >
+        #{facSecurityTwoPassed,jdbcType=DOUBLE},
+      </if>   
+      <if test="factoryCode != null" >
+        #{factoryCode,jdbcType=DOUBLE},
+      </if>
+      <if test="factorySchema != null" >
+        #{factorySchema,jdbcType=DOUBLE},
+      </if>
+      <if test="thirdFunction != null" >
+        #{thirdFunction,jdbcType=DOUBLE},
+      </if>
+      <if test="thirdFunTimes != null" >
+        #{thirdFunTimes,jdbcType=DOUBLE},
+      </if>
+      <if test="thirdFunTwoPassed != null" >
+        #{thirdFunTwoPassed,jdbcType=DOUBLE},
+      </if>
+      <if test="thirdSecurity != null" >
+        #{thirdSecurity,jdbcType=DOUBLE},
+      </if>
+      <if test="thirdSecurityTimes != null" >
+        #{thirdSecurity,jdbcType=DOUBLE},
+      </if>
+      <if test="thirdSecurityTwoPassed != null" >
+        #{thirdSecurity,jdbcType=DOUBLE},
+      </if>
+      <if test="thirdCode != null" >
+        #{thirdCode,jdbcType=DOUBLE},
+      </if>
+      <if test="thirdSchema != null" >
+        #{thirdSchema,jdbcType=DOUBLE},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cszx.pm.model.project.CompleteVo" >
+    update pm_external_complete
+    <set >
+      <if test="baseInfoId != null and baseInfoId !=''" >
+        base_info_id = #{baseInfoId,jdbcType=VARCHAR},
+      </if>
+      <if test="factoryFunction != null" >
+        factory_function = #{factoryFunction,jdbcType=DOUBLE},
+      </if>
+      <if test="facFunTimes != null" >
+        fac_fun_times = #{facFunTimes,jdbcType=DOUBLE},
+      </if>
+      <if test="facFunTwoPassed != null" >
+        fac_fun_two_passed = #{facFunTwoPassed,jdbcType=DOUBLE},
+      </if>
+      
+      <if test="factorySecurity != null" >
+        factory_security = #{factorySecurity,jdbcType=DOUBLE},
+      </if>
+      <if test="facSecurityTimes != null" >
+        fac_security_times = #{facSecurityTimes,jdbcType=DOUBLE},
+      </if>
+      <if test="facSecurityTwoPassed != null" >
+        fac_security_two_passed = #{facSecurityTwoPassed,jdbcType=DOUBLE},
+      </if>
+      
+      <if test="factoryCode != null" >
+        factory_code = #{factoryCode,jdbcType=DOUBLE},
+      </if>
+      <if test="factorySchema != null" >
+        factory_schema = #{factorySchema,jdbcType=DOUBLE},
+      </if>
+      <if test="thirdFunction != null" >
+        third_function = #{thirdFunction,jdbcType=DOUBLE},
+      </if>
+       <if test="thirdFunTimes != null" >
+        third_fun_times = #{thirdFunTimes,jdbcType=DOUBLE},
+      </if>
+       <if test="thirdFunTwoPassed != null" >
+        third_fun_two_passed = #{thirdFunTwoPassed,jdbcType=DOUBLE},
+      </if>
+      <if test="thirdSecurity != null" >
+        third_security = #{thirdSecurity,jdbcType=DOUBLE},
+      </if>
+      <if test="thirdSecurityTimes != null" >
+        third_security_times = #{thirdSecurityTimes,jdbcType=DOUBLE},
+      </if>
+      <if test="thirdSecurityTwoPassed != null" >
+        third_security_two_passed = #{thirdSecurityTwoPassed,jdbcType=DOUBLE},
+      </if>
+      
+      <if test="thirdCode != null" >
+        third_code = #{thirdCode,jdbcType=DOUBLE},
+      </if>
+      <if test="thirdSchema != null" >
+        third_schema = #{thirdSchema,jdbcType=DOUBLE},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cszx.pm.model.project.Complete" >
+    update pm_external_complete
+    set base_info_id = #{baseInfoId,jdbcType=VARCHAR},
+      factory_function = #{factoryFunction,jdbcType=DOUBLE},
+      factory_security = #{factorySecurity,jdbcType=DOUBLE},
+      factory_two_passed = #{factoryTwoPassed,jdbcType=DOUBLE},
+      factory_code = #{factoryCode,jdbcType=DOUBLE},
+      factory_schema = #{factorySchema,jdbcType=DOUBLE},
+      third_function = #{thirdFunction,jdbcType=DOUBLE},
+      third_security = #{thirdSecurity,jdbcType=DOUBLE},
+      third_code = #{thirdCode,jdbcType=DOUBLE},
+      third_schema = #{thirdSchema,jdbcType=DOUBLE}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

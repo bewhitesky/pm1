@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cszx.pm.dao.project.ProgressDao" >
+  <resultMap id="BaseResultMap" type="com.cszx.pm.model.project.Progress" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="base_info_id" property="baseInfoId" jdbcType="VARCHAR" />
+    <result column="curr_state_one" property="currStateOne" jdbcType="INTEGER" />
+    <result column="curr_state_two" property="currStateTwo" jdbcType="INTEGER" />
+    <result column="test_state" property="testState" jdbcType="VARCHAR" />
+    <result column="internal_complete_time" property="internalCompleteTime" jdbcType="TIMESTAMP" />
+    <result column="factory_complete_time" property="factoryCompleteTime" jdbcType="TIMESTAMP" />
+    <result column="third_complete_time" property="thirdCompleteTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, base_info_id, curr_state_one, curr_state_two, test_state, internal_complete_time, 
+    factory_complete_time, third_complete_time
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from pm_external_progress
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from pm_external_progress
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByBaseInfoId" parameterType="java.util.List">
+  	delete from pm_external_progress where base_info_id in
+  	<foreach close=")" collection="list" item="id" open="(" separator=",">
+  		#{id}
+  	</foreach>
+  </delete>
+  <insert id="insert" parameterType="com.cszx.pm.model.project.Progress" >
+    insert into pm_external_progress (id, base_info_id, curr_state_one, 
+      curr_state_two, test_state, internal_complete_time, 
+      factory_complete_time, third_complete_time
+      )
+    values (#{id,jdbcType=VARCHAR}, #{baseInfoId,jdbcType=VARCHAR}, #{currStateOne,jdbcType=INTEGER}, 
+      #{currStateTwo,jdbcType=INTEGER}, #{testState,jdbcType=VARCHAR}, #{internalCompleteTime,jdbcType=TIMESTAMP}, 
+      #{factoryCompleteTime,jdbcType=TIMESTAMP}, #{thirdCompleteTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.cszx.pm.model.project.Progress" >
+    insert into pm_external_progress
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="baseInfoId != null" >
+        base_info_id,
+      </if>
+      <if test="currStateOne != null" >
+        curr_state_one,
+      </if>
+      <if test="currStateTwo != null" >
+        curr_state_two,
+      </if>
+      <if test="testState != null" >
+        test_state,
+      </if>
+      <if test="internalCompleteTime != null" >
+        internal_complete_time,
+      </if>
+      <if test="factoryCompleteTime != null" >
+        factory_complete_time,
+      </if>
+      <if test="thirdCompleteTime != null" >
+        third_complete_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="baseInfoId != null" >
+        #{baseInfoId,jdbcType=VARCHAR},
+      </if>
+      <if test="currStateOne != null" >
+        #{currStateOne,jdbcType=INTEGER},
+      </if>
+      <if test="currStateTwo != null" >
+        #{currStateTwo,jdbcType=INTEGER},
+      </if>
+      <if test="testState != null" >
+        #{testState,jdbcType=VARCHAR},
+      </if>
+      <if test="internalCompleteTime != null" >
+        #{internalCompleteTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="factoryCompleteTime != null" >
+        #{factoryCompleteTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="thirdCompleteTime != null" >
+        #{thirdCompleteTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cszx.pm.model.project.ProgressVo" >
+    update pm_external_progress
+    <set >
+      <if test="baseInfoId != null" >
+        base_info_id = #{baseInfoId,jdbcType=VARCHAR},
+      </if>
+      <if test="currStateOne != null" >
+        curr_state_one = #{currStateOne,jdbcType=INTEGER},
+      </if>
+      <if test="currStateTwo != null" >
+        curr_state_two = #{currStateTwo,jdbcType=INTEGER},
+      </if>
+      <if test="testState != null" >
+        test_state = #{testState,jdbcType=VARCHAR},
+      </if>
+      <if test="internalCompleteTime != null and internalCompleteTime != ''" >
+        internal_complete_time = #{internalCompleteTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="factoryCompleteTime != null and factoryCompleteTime != ''" >
+        factory_complete_time = #{factoryCompleteTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="thirdCompleteTime != null and thirdCompleteTime != ''" >
+        third_complete_time = #{thirdCompleteTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remark!=null">
+      	remark= #{remark,jdbcType=VARCHAR}
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cszx.pm.model.project.Progress" >
+    update pm_external_progress
+    set base_info_id = #{baseInfoId,jdbcType=VARCHAR},
+      curr_state_one = #{currStateOne,jdbcType=INTEGER},
+      curr_state_two = #{currStateTwo,jdbcType=INTEGER},
+      test_state = #{testState,jdbcType=VARCHAR},
+      internal_complete_time = #{internalCompleteTime,jdbcType=TIMESTAMP},
+      factory_complete_time = #{factoryCompleteTime,jdbcType=TIMESTAMP},
+      third_complete_time = #{thirdCompleteTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <resultMap id="progressMap" type="com.cszx.pm.model.project.Project" >
+    <result column="id" property="progress.id" jdbcType="VARCHAR" />
+    <result column="base_info_id" property="progress.baseInfoId" jdbcType="VARCHAR" />
+    <result column="curr_state_one" property="progress.currStateOne" jdbcType="INTEGER" />
+    <result column="curr_state_two" property="progress.currStateTwo" jdbcType="INTEGER" />
+    <result column="test_state" property="progress.testState" jdbcType="VARCHAR" />
+    <result column="internal_complete_time" property="progress.internalCompleteTime" jdbcType="TIMESTAMP" />
+    <result column="factory_complete_time" property="progress.factoryCompleteTime" jdbcType="TIMESTAMP" />
+    <result column="third_complete_time" property="progress.thirdCompleteTime" jdbcType="TIMESTAMP" />
+    <result column="remark" property="progress.remark"/>
+  </resultMap>
+  <resultMap id="baseInfoMap" type="com.cszx.pm.model.project.Project" extends="progressMap">
+    <result column="p_department" jdbcType="INTEGER" property="baseInfo.pDepartment" />
+    <result column="p_name" jdbcType="VARCHAR" property="baseInfo.pName" />
+    <result column="product_name" jdbcType="VARCHAR" property="baseInfo.productName" />
+    <result column="p_type" jdbcType="INTEGER" property="baseInfo.pType" />
+    <result column="d_org" jdbcType="INTEGER" property="baseInfo.dorg" />
+    <result column="test_type" jdbcType="VARCHAR" property="baseInfo.testType" />
+    <result column="test_year" jdbcType="VARCHAR" property="baseInfo.testYear" />
+    <result column="plan_remark" jdbcType="VARCHAR" property="baseInfo.remark" />
+  </resultMap>
+  <resultMap id="projectMap" type="com.cszx.pm.model.project.Project" extends="baseInfoMap">
+    <result column="complete_id" property="complete.id" jdbcType="VARCHAR" />
+    <result column="factory_function" property="complete.factoryFunction" jdbcType="DOUBLE" />
+    <result column="fac_fun_times" property="complete.facFunTimes" jdbcType="DOUBLE" />
+    <result column="fac_fun_two_passed" property="complete.facFunTwoPassed" jdbcType="DOUBLE" />
+    
+    <result column="factory_security" property="complete.factorySecurity" jdbcType="DOUBLE" />
+    <result column="fac_security_times" property="complete.facSecurityTimes" jdbcType="DOUBLE" />
+    <result column="fac_security_two_passed" property="complete.facSecurityTwoPassed" jdbcType="DOUBLE" />
+    
+    <result column="factory_code" property="complete.factoryCode" jdbcType="DOUBLE" />
+    <result column="factory_schema" property="complete.factorySchema" jdbcType="DOUBLE" />
+    <result column="third_function" property="complete.thirdFunction" jdbcType="DOUBLE" />
+    <result column="third_fun_times" property="complete.thirdFunTimes" jdbcType="DOUBLE" />
+    <result column="third_fun_two_passed" property="complete.thirdFunTwoPassed" jdbcType="DOUBLE" />
+    
+    <result column="third_security" property="complete.thirdSecurity" jdbcType="DOUBLE" />
+    <result column="third_security_times" property="complete.thirdSecurityTimes" jdbcType="DOUBLE" />
+    <result column="third_security_two_passed" property="complete.thirdSecurityTwoPassed" jdbcType="DOUBLE" />
+    
+    <result column="third_code" property="complete.thirdCode" jdbcType="DOUBLE" />
+    <result column="third_schema" property="complete.thirdSchema" jdbcType="DOUBLE" />
+  </resultMap>
+  <select id="selectProgress" resultMap="projectMap" parameterType="java.util.Map" >
+    SELECT
+		b.p_department,
+		b.p_name, 
+		b.product_name,
+		b.p_type,
+		b.test_type,
+		b.test_year,
+		b.remark as plan_remark,
+		b.d_org,
+		p.id,
+		p.base_info_id,
+		p.curr_state_one,
+		p.curr_state_two,
+		p.test_state,
+		p.internal_complete_time,
+		p.factory_complete_time,
+		p.third_complete_time,
+		p.remark,
+		c.id as complete_id,
+		c.factory_code,
+		c.factory_function,
+		c.fac_fun_times,
+		c.fac_fun_two_passed,	
+		c.factory_schema,
+		c.factory_security,
+		c.fac_security_times,
+		c.fac_security_two_passed,
+		c.third_code,
+		c.third_function,
+		c.third_fun_times,
+		c.third_fun_two_passed,
+		c.third_schema,
+		c.third_security,
+		c.third_security_times,
+		c.third_security_two_passed
+	FROM
+		pm_base_info b, 
+ 		pm_external_progress p ,
+  		pm_external_complete c 
+  	where b.id = p.base_info_id and b.id = c.base_info_id	
+	<if test="pDepartment != null ">
+  		and b.p_department=#{pDepartment}
+  	</if>
+  	<if test="dorg != null ">
+  		and b.d_org=#{dorg}
+  	</if>
+  	<if test="pName != null and pName !=''">
+  		and b.product_name like concat('%',#{pName},'%')
+  	</if>
+  	<if test="currStateOne != null or currStateTwo !=null">
+  		and (p.curr_state_one=#{currStateOne} or p.curr_state_two=#{currStateTwo})
+  	</if>
+  	<if test="testYear != null and testYear !=''">
+  		and b.test_year=#{testYear}
+  	</if>
+  	<if test="testState != null and testState !=''">
+  		and p.test_state=#{testState}
+  	</if>
+  	<if test="testState == null or testState ==''">
+  		and ((p.test_state != "测试完成" and p.test_state !="终止" ) OR p.test_state IS NULL)
+  	</if>
+  	<if test="internalStartTime != null and internalStartTime !=''">
+  		and p.internal_complete_time >=#{internalStartTime}
+  	</if>
+  	<if test="internalEndTime != null and internalEndTime !=''">
+  	<![CDATA[
+  		and p.internal_complete_time <= #{internalEndTime}
+  	]]>	
+  	</if>
+  	 	<if test="factoryStartTime != null and factoryStartTime !=''">
+  		and p.factory_complete_time >=#{factoryStartTime,jdbcType=TIMESTAMP}
+  	</if>
+  	<if test="factoryEndTime != null and factoryEndTime !=''">
+  	<![CDATA[
+  		and p.factory_complete_time <= #{factoryEndTime}
+  	]]>	
+  	</if>
+  	 	<if test="thirdStartTime != null and thirdStartTime !=''">
+  		and p.third_complete_time >=#{thirdStartTime,jdbcType=TIMESTAMP}
+  	</if>
+  	<if test="thirdEndTime != null and thirdEndTime !=''">
+  	<![CDATA[
+  		and p.third_complete_time <= #{thirdEndTime}
+  	]]>	
+  	</if>
+  </select>
+  
+  <select id="selectByBaseInfoId" resultType="java.lang.Integer" parameterType="java.lang.String">
+  	select
+  	 count(id)
+  	 from
+  	 pm_external_progress
+  	 where base_info_id=#{baseInfoId}
+  </select>
+</mapper>

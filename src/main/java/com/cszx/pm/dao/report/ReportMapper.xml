@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cszx.pm.dao.report.ReportDao" >
+  <resultMap id="BaseResultMap" type="com.cszx.pm.model.report.Report" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="base_info_id" property="baseInfoId" jdbcType="VARCHAR" />
+    <result column="curr_state_one" property="currStateOne" jdbcType="INTEGER" />
+    <result column="curr_state_two" property="currStateTwo" jdbcType="VARCHAR" />
+    <result column="risk_level" property="riskLevel" jdbcType="VARCHAR" />
+    <result column="linkman" property="linkman" jdbcType="VARCHAR" />
+    <result column="linkman_tel" property="linkmanTel" jdbcType="VARCHAR" />
+    <result column="linkman_email" property="linkmanEmail" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.cszx.pm.model.report.ReportWithBLOBs" extends="BaseResultMap" >
+    <result column="risk_point" property="riskPoint" jdbcType="LONGVARCHAR" />
+    <result column="remark" property="remark" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, base_info_id, curr_state_one, curr_state_two, risk_level, linkman, linkman_tel, 
+    linkman_email
+  </sql>
+  <sql id="Blob_Column_List" >
+    risk_point, remark
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from pm_external_progress_report
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <resultMap id="ReportMap" type="com.cszx.pm.model.report.ReportResult" >
+  	<result column="id" property="id" jdbcType="VARCHAR" />
+    <result column="base_info_id" property="baseInfoId" jdbcType="VARCHAR" />
+    <result column="curr_state_one" property="currStateReport" jdbcType="INTEGER" />
+    <result column="curr_state_two" property="currState" jdbcType="VARCHAR" />
+    <result column="risk_level" property="riskLevel" jdbcType="VARCHAR" />
+    <result column="linkman" property="linkman" jdbcType="VARCHAR" />
+    <result column="linkman_tel" property="linkmanTel" jdbcType="VARCHAR" />
+    <result column="linkman_email" property="linkmanEmail" jdbcType="VARCHAR" />
+    <result column="risk_point" property="riskPoint" jdbcType="LONGVARCHAR" />
+    <result column="remark" property="remark" jdbcType="LONGVARCHAR" />
+    <result column="p_department" property="pDepartment" jdbcType="INTEGER" />
+    <result column="product_name" property="pName" jdbcType="VARCHAR" />
+    <result column="p_type" property="pType" jdbcType="INTEGER" />
+    <result column="createtime" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="apply_fun_time" jdbcType="TIMESTAMP" property="applyFunTime" />
+    <result column="apply_sec_time" jdbcType="TIMESTAMP" property="applySecTime" />
+  </resultMap>
+  <select id="selectReport" resultMap="ReportMap" parameterType="java.util.Map">
+	SELECT
+	    r.id,
+	    r.base_info_id,
+		b.p_department,
+		b.product_name,
+		b.p_type,
+		r.curr_state_one,
+		r.curr_state_two,
+		r.risk_level,
+		r.risk_point,
+		r.remark,
+		r.linkman,
+		r.linkman_email,
+		r.linkman_tel,	
+		r.createtime,
+		r.apply_fun_time,
+		r.apply_sec_time
+	FROM
+		pm_base_info b,
+	    pm_external_progress_report r
+	where b.id=r.base_info_id
+	<if test="currStateOne != null ">
+  		and r.curr_state_one=#{currStateOne}
+  	</if>
+  	<if test="pName != null and pName !=''">
+  		and b.product_name like concat('%',#{pName},'%')
+  	</if>
+  	<if test="riskLevel != null ">
+  		and r.risk_level=#{riskLevel}
+  	</if>
+  	ORDER BY r.createtime DESC,b.product_name,r.curr_state_one
+  </select>
+
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from pm_external_progress_report
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  
+  <delete id="deleteReport" parameterType="java.util.List">
+  	delete from pm_external_progress_report where base_info_id in
+  	<foreach close=")" collection="list" item="id" open="(" separator=",">
+  		#{id}
+  	</foreach>
+  </delete>
+  
+  <delete id="deleteReportById" parameterType="java.util.List">
+  	delete from pm_external_progress_report where id in
+  	<foreach close=")" collection="list" item="id" open="(" separator=",">
+  		#{id}
+  	</foreach>
+  </delete>
+  
+  <insert id="addReport" parameterType="com.cszx.pm.model.report.ReportVo" >
+    insert into pm_external_progress_report
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="baseInfoId != null" >
+        base_info_id,
+      </if>
+      <if test="currStateOne != null" >
+        curr_state_one,
+      </if>
+      <if test="currStateTwo != null" >
+        curr_state_two,
+      </if>
+      <if test="riskLevel != null" >
+        risk_level,
+      </if>
+      <if test="linkman != null" >
+        linkman,
+      </if>
+      <if test="linkmanTel != null" >
+        linkman_tel,
+      </if>
+      <if test="linkmanEmail != null" >
+        linkman_email,
+      </if>
+      <if test="riskPoint != null" >
+        risk_point,
+      </if>
+      <if test="remark != null" >
+        remark,
+      </if>
+      <if test="applyFunTime != null and applyFunTime != ''" >
+        apply_fun_time,
+      </if>
+      <if test="applySecTime != null and applySecTime != ''" >
+        apply_sec_time
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="baseInfoId != null" >
+        #{baseInfoId,jdbcType=VARCHAR},
+      </if>
+      <if test="currStateOne != null" >
+        #{currStateOne,jdbcType=INTEGER},
+      </if>
+      <if test="currStateTwo != null" >
+        #{currStateTwo,jdbcType=VARCHAR},
+      </if>
+      <if test="riskLevel != null" >
+        #{riskLevel,jdbcType=INTEGER},
+      </if>
+      <if test="linkman != null" >
+        #{linkman,jdbcType=VARCHAR},
+      </if>
+      <if test="linkmanTel != null" >
+        #{linkmanTel,jdbcType=VARCHAR},
+      </if>
+      <if test="linkmanEmail != null" >
+        #{linkmanEmail,jdbcType=VARCHAR},
+      </if>
+      <if test="riskPoint != null" >
+        #{riskPoint,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="applyFunTime != null and applyFunTime != ''" >
+        #{applyFunTime,jdbcType=VARCHAR},
+      </if>
+      <if test="applySecTime != null and applySecTime != ''" >
+        #{applySecTime,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="updateReport" parameterType="com.cszx.pm.model.report.ReportVo" >
+    update pm_external_progress_report
+    <set >
+      <if test="baseInfoId != null" >
+        base_info_id = #{baseInfoId,jdbcType=VARCHAR},
+      </if>
+      <if test="currStateOne != null" >
+        curr_state_one = #{currStateOne,jdbcType=INTEGER},
+      </if>
+      <if test="currStateTwo != null" >
+        curr_state_two = #{currStateTwo,jdbcType=VARCHAR},
+      </if>
+      <if test="riskLevel != null" >
+        risk_level = #{riskLevel,jdbcType=VARCHAR},
+      </if>
+      <if test="linkman != null" >
+        linkman = #{linkman,jdbcType=VARCHAR},
+      </if>
+      <if test="linkmanTel != null" >
+        linkman_tel = #{linkmanTel,jdbcType=VARCHAR},
+      </if>
+      <if test="linkmanEmail != null" >
+        linkman_email = #{linkmanEmail,jdbcType=VARCHAR},
+      </if>
+      <if test="riskPoint != null" >
+        risk_point = #{riskPoint,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="remark != null" >
+        remark = #{remark,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="applyFunTime != null and applyFunTime != ''" >
+        apply_fun_time=#{applyFunTime,jdbcType=VARCHAR},
+      </if>
+      <if test="applyFunTime == ''">
+      	apply_fun_time=NULL,
+      </if>
+      <if test="applySecTime != null and applySecTime != ''" >
+        apply_sec_time=#{applySecTime,jdbcType=VARCHAR},
+      </if>
+      <if test="applySecTime == ''">
+      	apply_sec_time=NULL,
+      </if>
+      	createTime=NOW()
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.cszx.pm.model.report.ReportWithBLOBs" >
+    update pm_external_progress_report
+    set base_info_id = #{baseInfoId,jdbcType=VARCHAR},
+      curr_state_one = #{currStateOne,jdbcType=INTEGER},
+      curr_state_two = #{currStateTwo,jdbcType=VARCHAR},
+      risk_level = #{riskLevel,jdbcType=VARCHAR},
+      linkman = #{linkman,jdbcType=VARCHAR},
+      linkman_tel = #{linkmanTel,jdbcType=VARCHAR},
+      linkman_email = #{linkmanEmail,jdbcType=VARCHAR},
+      risk_point = #{riskPoint,jdbcType=LONGVARCHAR},
+      remark = #{remark,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cszx.pm.model.report.Report" >
+    update pm_external_progress_report
+    set base_info_id = #{baseInfoId,jdbcType=VARCHAR},
+      curr_state_one = #{currStateOne,jdbcType=INTEGER},
+      curr_state_two = #{currStateTwo,jdbcType=VARCHAR},
+      risk_level = #{riskLevel,jdbcType=VARCHAR},
+      linkman = #{linkman,jdbcType=VARCHAR},
+      linkman_tel = #{linkmanTel,jdbcType=VARCHAR},
+      linkman_email = #{linkmanEmail,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

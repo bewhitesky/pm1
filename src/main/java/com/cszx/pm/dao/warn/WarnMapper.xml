@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cszx.pm.dao.warn.WarnDao">
+    
+    <resultMap id="WarnResultMap" type="com.cszx.pm.model.warn.Warn">
+        <result column="warn" property="warn" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="checkWarn" resultMap="WarnResultMap">
+        select warn
+        from testwarning
+    </select>
+
+    <select id="totalWarn" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select count(warn)
+        from testwarning
+    </select>
+</mapper>

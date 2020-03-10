@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cszx.pm.dao.Internal.InternalDefectDao" >
+  <resultMap id="BaseResultMap" type="com.cszx.pm.model.internal.InternalDefect" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="internal_test_id" property="internalTestId" jdbcType="VARCHAR" />
+    <result column="defect" property="defect" jdbcType="DOUBLE" />
+    <result column="defect_num" property="defectNum" jdbcType="DOUBLE" />
+    <result column="case_num" property="caseNum" jdbcType="DOUBLE" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, internal_test_id, defect ,defect_num,case_num
+  </sql>
+  
+  <select id="selectByTestId" resultType="java.lang.Double" parameterType="java.lang.String" >
+    select 
+    	defect
+    from pm_internal_test_defect
+    where internal_test_id = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from pm_internal_test_defect
+    where internal_test_id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from pm_internal_test_defect
+    where internal_test_id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.cszx.pm.model.internal.InternalDefect" >
+    insert into pm_internal_test_defect (id, internal_test_id, defect,defect_num,case_num
+      )
+    values (#{id,jdbcType=VARCHAR}, #{internalTestId,jdbcType=VARCHAR}, #{defect,jdbcType=DOUBLE}, 
+    #{defectNum,jdbcType=DOUBLE}, #{caseNum,jdbcType=DOUBLE}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.cszx.pm.model.internal.InternalDefect" >
+    insert into pm_internal_test_defect
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="internalTestId != null" >
+        internal_test_id,
+      </if>
+      <if test="defect != null" >
+        defect,
+      </if>
+      <if test="defectNum != null" >
+        defect_num,
+      </if>
+      <if test="caseNum != null" >
+        case_num,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="internalTestId != null" >
+        #{internalTestId,jdbcType=VARCHAR},
+      </if>
+      <if test="defect != null" >
+        #{defect,jdbcType=DOUBLE},
+      </if>
+       <if test="defectNum != null" >
+        #{defectNum,jdbcType=DOUBLE},
+      </if>
+       <if test="caseNum != null" >
+        #{caseNum,jdbcType=DOUBLE},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cszx.pm.model.internal.InternalDefect" >
+    update pm_internal_test_defect
+    <set >
+      <if test="defect != null" >
+        defect = #{defect,jdbcType=DOUBLE},
+      </if>
+      <if test="defectNum != null" >
+        defect_num = #{defectNum,jdbcType=DOUBLE},
+      </if>
+      <if test="caseNum != null" >
+        case_num = #{caseNum,jdbcType=DOUBLE},
+      </if>
+    </set>
+    where internal_test_id = #{internalTestId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cszx.pm.model.internal.InternalDefect" >
+    update pm_internal_test_defect
+    set internal_test_id = #{internalTestId,jdbcType=VARCHAR},
+      defect = #{defect,jdbcType=DOUBLE},
+      defect_num = #{defectNum,jdbcType=DOUBLE},
+      case_num = #{caseNum,jdbcType=DOUBLE}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <delete id="deleteDefectByInternalId" parameterType="java.util.List">
+  	delete from pm_internal_test_defect where internal_test_id in
+  	<foreach close=")" collection="list" item="id" open="(" separator=",">
+  		#{id}
+  	</foreach>
+  </delete>
+</mapper>

@@ -1,0 +1,509 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cszx.pm.dao.Internal.InternalDao" >
+  <resultMap id="BaseResultMap" type="com.cszx.pm.model.internal.Internal" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="base_info_id" property="baseInfoId" jdbcType="VARCHAR" />
+    <result column="test_item" property="testItem" jdbcType="VARCHAR" />
+    <result column="receive_time" property="receiveTime" jdbcType="TIMESTAMP" />
+    <result column="test_server" property="testServer" jdbcType="VARCHAR" />
+    <result column="internal_test_state" property="internalTestState" jdbcType="INTEGER" />
+    <result column="test_principal" property="testPrincipal" jdbcType="INTEGER" />
+    <result column="deployment_time" property="deploymentTime" jdbcType="TIMESTAMP" />
+    <result column="tester_name" property="testerName" jdbcType="VARCHAR" />
+    <result column="tester_tel" property="testerTel" jdbcType="VARCHAR" />
+    <result column="tester_email" property="testerEmail" jdbcType="VARCHAR" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, base_info_id, test_item, receive_time, test_server, internal_test_state, test_principal, 
+    deployment_time, tester_name, tester_tel, tester_email,remark
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from pm_internal_test
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="countWorkday" resultType="java.lang.Integer">
+  	select COUNT(id) from workday  where workday between #{0} AND #{1}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from pm_internal_test
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+
+  <insert id="addInternal" parameterType="com.cszx.pm.model.internal.InternalVo" >
+    insert into pm_internal_test
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="baseInfoId != null" >
+        base_info_id,
+      </if>
+      <if test="testItem != null" >
+        test_item,
+      </if>
+      <if test="receiveTime != null and receiveTime != ''" >
+        receive_time,
+      </if>
+      <if test="testServer != null" >
+        test_server,
+      </if>
+      <if test="internalTestState != null" >
+        internal_test_state,
+      </if>
+      <if test="testPrincipal != null" >
+        test_principal,
+      </if>
+      <if test="deploymentTime != null and deploymentTime!=''" >
+        deployment_time,
+      </if>
+      <if test="testerName != null" >
+        tester_name,
+      </if>
+      <if test="testerTel != null" >
+        tester_tel,
+      </if>
+      <if test="testerEmail != null" >
+        tester_email,
+      </if>
+      <if test="remark != null" >
+        remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="baseInfoId != null" >
+        #{baseInfoId,jdbcType=VARCHAR},
+      </if>
+      <if test="testItem != null" >
+        #{testItem,jdbcType=VARCHAR},
+      </if>
+      <if test="receiveTime != null and receiveTime != ''" >
+        #{receiveTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="testServer != null" >
+        #{testServer,jdbcType=VARCHAR},
+      </if>
+      <if test="internalTestState != null" >
+        #{internalTestState,jdbcType=INTEGER},
+      </if>
+      <if test="testPrincipal != null" >
+        #{testPrincipal,jdbcType=INTEGER},
+      </if>
+      <if test="deploymentTime != null and deploymentTime!=''" >
+        #{deploymentTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="testerName != null" >
+        #{testerName,jdbcType=VARCHAR},
+      </if>
+      <if test="testerTel != null" >
+        #{testerTel,jdbcType=VARCHAR},
+      </if>
+      <if test="testerEmail != null" >
+        #{testerEmail,jdbcType=VARCHAR},
+      </if>
+       <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cszx.pm.model.internal.Internal" >
+    update pm_internal_test
+    <set >
+      <if test="baseInfoId != null" >
+        base_info_id = #{baseInfoId,jdbcType=VARCHAR},
+      </if>
+      <if test="testItem != null" >
+        test_item = #{testItem,jdbcType=VARCHAR},
+      </if>
+      <if test="receiveTime != null and receiveTime != ''" >
+        receive_time = #{receiveTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="testServer != null" >
+        test_server = #{testServer,jdbcType=VARCHAR},
+      </if>
+      <if test="internalTestState != null" >
+        internal_test_state = #{internalTestState,jdbcType=INTEGER},
+      </if>
+      <if test="testPrincipal != null" >
+        test_principal = #{testPrincipal,jdbcType=INTEGER},
+      </if>
+      <if test="deploymentTime != null and deploymentTime != ''" >
+        deployment_time = #{deploymentTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="testerName != null" >
+        tester_name = #{testerName,jdbcType=VARCHAR},
+      </if>
+      <if test="testerTel != null" >
+        tester_tel = #{testerTel,jdbcType=VARCHAR},
+      </if>
+      <if test="testerEmail != null" >
+        tester_email = #{testerEmail,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cszx.pm.model.internal.Internal" >
+    update pm_internal_test
+    set base_info_id = #{baseInfoId,jdbcType=VARCHAR},
+      test_item = #{testItem,jdbcType=VARCHAR},
+      receive_time = #{receiveTime,jdbcType=TIMESTAMP},
+      test_server = #{testServer,jdbcType=VARCHAR},
+      internal_test_state = #{internalTestState,jdbcType=INTEGER},
+      test_principal = #{testPrincipal,jdbcType=INTEGER},
+      deployment_time = #{deploymentTime,jdbcType=TIMESTAMP},
+      tester_name = #{testerName,jdbcType=VARCHAR},
+      tester_tel = #{testerTel,jdbcType=VARCHAR},
+      tester_email = #{testerEmail,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <update id="updateInternal" parameterType="com.cszx.pm.model.internal.InternalVo" >
+    update pm_internal_test
+    set base_info_id = #{baseInfoId,jdbcType=VARCHAR},
+      test_item = #{testItem,jdbcType=VARCHAR},
+      receive_time = #{receiveTime,jdbcType=TIMESTAMP},
+      test_server = #{testServer,jdbcType=VARCHAR},
+      internal_test_state = #{internalTestState,jdbcType=INTEGER},
+      test_principal = #{testPrincipal,jdbcType=INTEGER},
+      deployment_time = #{deploymentTime,jdbcType=TIMESTAMP},
+      tester_name = #{testerName,jdbcType=VARCHAR},
+      tester_tel = #{testerTel,jdbcType=VARCHAR},
+      tester_email = #{testerEmail,jdbcType=VARCHAR},
+      remark=#{remark,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  
+  <resultMap id="internalMap" type="com.cszx.pm.model.internal.InternalObj" >
+    <result column="id" property="internal.id" jdbcType="VARCHAR" />
+    <result column="base_info_id" property="internal.baseInfoId" jdbcType="VARCHAR" />
+    <result column="test_item" property="internal.testItem" jdbcType="VARCHAR" />
+    <result column="receive_time" property="internal.receiveTime" jdbcType="TIMESTAMP" />
+    <result column="test_server" property="internal.testServer" jdbcType="VARCHAR" />
+    <result column="internal_test_state" property="internal.internalTestState" jdbcType="INTEGER" />
+    <result column="test_principal" property="internal.testPrincipal" jdbcType="INTEGER" />
+    <result column="deployment_time" property="internal.deploymentTime" jdbcType="TIMESTAMP" />
+    <result column="tester_name" property="internal.testerName" jdbcType="VARCHAR" />
+    <result column="tester_tel" property="internal.testerTel" jdbcType="VARCHAR" />
+    <result column="tester_email" property="internal.testerEmail" jdbcType="VARCHAR" />
+    <result column="remark" property="internal.remark" jdbcType="VARCHAR" />
+    <association column="id"  property="internalItems" select="com.cszx.pm.dao.Internal.InternalItemDao.selectInternalItems"></association>
+  </resultMap>
+  <resultMap id="baseInfoMap" type="com.cszx.pm.model.internal.InternalObj" extends="internalMap">
+    <result column="p_department" jdbcType="INTEGER" property="baseInfo.pDepartment" />
+    <result column="product_name" jdbcType="VARCHAR" property="baseInfo.pName" />
+    <result column="p_type" jdbcType="INTEGER" property="baseInfo.pType" />
+    <result column="p_level" jdbcType="INTEGER" property="baseInfo.pLevel" />
+    <result column="factory_time" jdbcType="TIMESTAMP" property="baseInfo.factoryTime" />
+  </resultMap>
+  <select id="selectInternalTest" resultMap="baseInfoMap" parameterType="java.util.Map">
+    SELECT
+		b.p_department,
+		b.product_name, 
+		b.p_type,
+		b.p_level,
+		b.factory_time,
+		t.id,
+		t.base_info_id,
+		t.test_item, 
+		t.receive_time, 
+		t.test_server, 
+		t.internal_test_state, 
+		t.test_principal, 
+        t.deployment_time, 
+        t.tester_name, 
+        t.tester_tel, 
+        t.tester_email,
+        t.remark
+	FROM
+		pm_base_info b,
+		pm_internal_test t
+	WHERE b.id=t.base_info_id
+  
+  	<if test="pName != null and pName !=''">
+  		and b.product_name like concat('%',#{pName},'%')
+  	</if>
+  	<if test="deploymentStartTime != null and deploymentStartTime !=''">
+  		and t.deployment_time between #{deploymentStartTime} and #{deploymentEndTime}
+  	</if>
+  	<if test="internalTestState ==null">
+  		<![CDATA[
+  			and (t.internal_test_state < 2 or t.internal_test_state IS NULL)
+  		 ]]>
+  	</if>
+  	<if test="internalTestState !=null">
+  		and t.internal_test_state = #{internalTestState}
+  	</if>
+  	  order by b.product_name,t.test_item
+
+  </select>
+  
+   <resultMap id="exportMap" type="com.cszx.pm.model.internal.InternalExport" >
+    <result column="p_department" property="pDepartment" jdbcType="INTEGER" />
+    <result column="product_name" property="pName" jdbcType="VARCHAR" />
+    <result column="p_level" property="pLevel" jdbcType="INTEGER" />
+    <result column="p_type" property="pType" jdbcType="INTEGER" />
+    <result column="factory_time" property="factoryTime" jdbcType="TIMESTAMP" />
+    <result column="id" property="id" jdbcType="VARCHAR" />
+    <result column="test_item" property="testItem" jdbcType="VARCHAR" />
+    <result column="receive_time" property="receiveTime" jdbcType="TIMESTAMP" />
+    <result column="test_server" property="testServer" jdbcType="VARCHAR" />
+    <result column="internal_test_state" property="internalTestState" jdbcType="INTEGER" />
+    <result column="test_principal" property="testPrincipal" jdbcType="INTEGER" />
+    <result column="deployment_time" property="deploymentTime" jdbcType="TIMESTAMP" />
+    <result column="tester_name" property="testerName" jdbcType="VARCHAR" />
+    <result column="tester_tel" property="testerTel" jdbcType="VARCHAR" />
+    <result column="tester_email" property="testerEmail" jdbcType="VARCHAR" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="internal_test_times" property="internalTestTimes" jdbcType="INTEGER" />
+    <result column="deploy_start_time" property="deployStartTime" jdbcType="TIMESTAMP" />
+    <result column="deploy_end_time" property="deployEndTime" jdbcType="TIMESTAMP" />
+    <result column="test_start_time" property="testStartTime" jdbcType="TIMESTAMP" />
+    <result column="test_end_time" property="testEndTime" jdbcType="TIMESTAMP" />
+    <result column="test_time" property="testTime" jdbcType="VARCHAR" />
+    <result column="correct_time" property="correctTime" jdbcType="VARCHAR" />
+  </resultMap>
+  <select id="exportInternal" resultMap="exportMap" parameterType="java.util.Map">
+  		SELECT
+		b.p_department,
+		b.product_name,
+		b.p_level,
+		b.p_type,
+		b.factory_time,
+		t.id,
+		t.test_item,
+		t.receive_time,
+		t.test_server,
+		t.internal_test_state,
+		t.test_principal,
+		t.deployment_time,
+		t.tester_name,
+		t.tester_tel,
+		t.tester_email,
+		t.remark,
+		i.internal_test_times,
+		i.deploy_start_time,
+		i.deploy_end_time,
+		i.test_start_time,
+		i.test_end_time,
+		i.test_time,
+		i.correct_time
+	FROM
+		pm_base_info b ,
+  		pm_internal_test t 
+  		LEFT JOIN pm_internal_test_item i 
+  		ON t.id = i.internal_test_id 
+    WHERE b.id = t.base_info_id 
+    ORDER BY b.product_name, t.test_item , t.id , i.internal_test_times
+  </select>
+  
+  <resultMap id="defectMap" type="com.cszx.pm.model.internal.Defect">
+    <result column="id" property="id" jdbcType="VARCHAR" />
+    <result column="base_info_id" property="baseInfoId" jdbcType="VARCHAR" />
+    <result column="product_name" jdbcType="VARCHAR" property="pname" />
+    <result column="security_defect" jdbcType="DOUBLE" property="securityDefect" />
+    <result column="schema_defect" jdbcType="DOUBLE" property="schemaDefect" />
+    <result column="code_defect" jdbcType="DOUBLE" property="codeDefect" />
+    <result column="function_defect" jdbcType="DOUBLE" property="functionDefect" />
+  </resultMap>
+   <select id="selectDefect" resultMap="defectMap" parameterType="java.util.Map">
+    SELECT
+		b.product_name, 
+		d.id,
+		d.base_info_id,
+		d.security_defect, 
+		d.schema_defect, 
+		d.code_defect, 
+		d.function_defect 
+	FROM
+		pm_base_info b,
+		pm_internal_defect d
+	WHERE b.id=d.base_info_id
+  	<if test="pName != null and pName !=''">
+  		and b.product_name like concat('%',#{pName},'%')
+  	</if>
+  </select>
+  
+  <delete id="deleteInternal" parameterType="java.util.List">
+  	delete from pm_internal_test where id in
+  	<foreach close=")" collection="list" item="id" open="(" separator=",">
+  		#{id}
+  	</foreach>
+  </delete>
+  
+  <delete id="deleteInternalByBaseInfoId" parameterType="java.util.List">
+  	delete from pm_internal_test where base_info_id in
+  	<foreach close=")" collection="list" item="baseInfoId" open="(" separator=",">
+  		#{baseInfoId}
+  	</foreach>
+  </delete>
+  
+  <delete id="deleteItemsByInternalId" parameterType="java.util.List">
+  	delete from pm_internal_test_item where internal_test_id in
+  	<foreach close=")" collection="list" item="id" open="(" separator=",">
+  		#{id}
+  	</foreach>
+  </delete>
+  
+  <insert id="addDefect" parameterType="com.cszx.pm.model.internal.Defect" >
+    insert into pm_internal_defect
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="baseInfoId != null" >
+        base_info_id,
+      </if>
+      <if test="securityDefect != null" >
+        security_defect,
+      </if>
+      <if test="schemaDefect != null" >
+        schema_defect,
+      </if>
+      <if test="codeDefect != null" >
+        code_defect,
+      </if>
+      <if test="functionDefect != null">
+        function_defect,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="baseInfoId != null" >
+        #{baseInfoId,jdbcType=VARCHAR},
+      </if>
+      <if test="securityDefect != null" >
+        #{securityDefect,jdbcType=DOUBLE},
+      </if>
+      <if test="schemaDefect != null" >
+        #{schemaDefect,jdbcType=DOUBLE},
+      </if>
+      <if test="codeDefect != null" >
+        #{codeDefect,jdbcType=DOUBLE},
+      </if>
+      <if test="functionDefect != null" >
+        #{functionDefect,jdbcType=DOUBLE},
+      </if>
+    </trim>
+  </insert>
+  
+   <update id="updateDefect" parameterType="com.cszx.pm.model.internal.Defect">
+  	update pm_internal_defect
+  	  <set>
+      <if test="id != null">
+        id = #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="baseInfoId != null">
+        base_info_id = #{baseInfoId,jdbcType=VARCHAR},
+      </if>
+      <if test="securityDefect != null">
+        security_defect = #{securityDefect,jdbcType=DOUBLE},
+      </if>
+      <if test="schemaDefect != null">
+        schema_defect = #{schemaDefect,jdbcType=DOUBLE},
+      </if>
+      <if test="codeDefect != null">
+        code_defect = #{codeDefect,jdbcType=DOUBLE},
+      </if>
+      <if test="functionDefect != null">
+        function_defect = #{functionDefect,jdbcType=DOUBLE},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}	
+  </update>
+  
+  <delete id="deleteDefect" parameterType="java.util.List">
+  	delete from pm_internal_defect where base_info_id in
+  	<foreach close=")" collection="list" item="baseInfoId" open="(" separator=",">
+  		#{baseInfoId}
+  	</foreach>
+  </delete>
+  
+  <select id="selectInternalTestIdByBaseInfoId" resultType="java.lang.String" parameterType="java.util.List">
+    SELECT
+		id
+	FROM
+		pm_internal_test
+	WHERE base_info_id in
+  	<foreach close=")" collection="list" item="baseInfoId" open="(" separator=",">
+  		#{baseInfoId}
+  	</foreach>
+  </select>
+  
+  
+  <resultMap id="statisticsMap" type="com.cszx.pm.model.internal.Statistics">
+  	<result column="id"  jdbcType="VARCHAR" property="id"/>
+    <result column="product_name"  jdbcType="VARCHAR" property="pName"/>
+    <result column="test_item"  jdbcType="VARCHAR" property="testItem"/>
+    <result column="times" jdbcType="INTEGER" property="times" />
+    <result column="defect" jdbcType="DOUBLE" property="defect" />
+    <result column="defect_num" jdbcType="INTEGER" property="defectNum" />
+    <result column="case_num" jdbcType="INTEGER" property="caseNum" />
+    <result column="test_time" jdbcType="VARCHAR" property="testTime" />
+    <result column="correct_time" jdbcType="VARCHAR" property="correctTime" />
+    <result column="test_start_time" jdbcType="TIMESTAMP" property="testStartTime" />
+    <result column="test_end_time" jdbcType="TIMESTAMP" property="testEndTime" />
+  </resultMap>
+  
+  <select id="statistics" resultMap="statisticsMap" parameterType="java.util.Map">
+	SELECT
+		b.id,
+		b.product_name,
+		t.test_item,
+		COUNT(i.internal_test_times) as times,
+		SUM(i.test_time) as test_time,
+		SUM(i.correct_time) as correct_time,
+		d.defect,
+		d.defect_num,
+		d.case_num,
+		(SELECT
+		  test_start_time 
+		FROM
+		  pm_internal_test_item a 
+		WHERE a.internal_test_id=i.internal_test_id ORDER BY a.internal_test_times LIMIT 1) AS test_start_time,
+		(SELECT 
+		  test_end_time 
+		FROM
+		  pm_internal_test_item b 
+		WHERE b.internal_test_id=i.internal_test_id ORDER BY b.internal_test_times DESC LIMIT 1) AS test_end_time
+	FROM
+		pm_base_info b,
+		pm_internal_test t 
+	LEFT JOIN 
+		pm_internal_test_item i
+	ON t.id=i.internal_test_id
+	LEFT JOIN 
+		pm_internal_test_defect d
+	ON t.id=d.internal_test_id
+	WHERE b.id=t.base_info_id 
+	<if test="pName != null and pName !=''">
+		and b.product_name like concat('%',#{pName},'%')
+  	</if>
+	GROUP BY b.product_name,t.test_item
+	Having 1=1
+	<if test="endtime != null and endtime !=''">
+		<![CDATA[
+  		and (test_start_time < #{endtime} OR CONVERT(test_start_time,CHAR) LIKE concat(#{endtime},'%'))
+  		]]>
+  	</if>
+  	<if test="startime != null and startime !=''">
+		<![CDATA[
+  		and test_end_time > #{startime}
+  		]]>
+  	</if>
+  </select>
+  
+</mapper>

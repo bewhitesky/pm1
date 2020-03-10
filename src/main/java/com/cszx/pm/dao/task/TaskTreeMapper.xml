@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cszx.pm.dao.task.TaskTreeDao" >
+  <resultMap id="BaseResultMap" type="com.cszx.pm.model.task.TaskTree" >
+    <result column="id" property="id" jdbcType="VARCHAR" />
+    <result column="task_name" property="taskName" jdbcType="VARCHAR" />
+    <result column="task_require" property="taskRequire" jdbcType="INTEGER" />
+    <result column="task_state" property="taskState" jdbcType="INTEGER" />
+    <result column="executor" property="executor" jdbcType="VARCHAR" />
+    <result column="expect_start_time" property="expectStartTime" jdbcType="TIMESTAMP" />
+    <result column="actual_start_time" property="actualStartTime" jdbcType="TIMESTAMP" />
+    <result column="deadline" property="deadline" jdbcType="TIMESTAMP" />
+    <result column="actual_end_time" property="actualEndTime" jdbcType="TIMESTAMP" />
+    <result column="creat_time" property="creatTime" jdbcType="TIMESTAMP" />
+    <result column="expect_day" property="expectDay" jdbcType="INTEGER" />
+    <result column="actual_day" property="actualDay" jdbcType="INTEGER" />
+    <result column="expect_progress" property="expectProgress" jdbcType="DOUBLE" />
+    <result column="actual_progress" property="actualProgress" jdbcType="DOUBLE" />
+    <result column="curr_state" property="currState" jdbcType="VARCHAR" />
+    <result column="workload" property="workload" jdbcType="INTEGER" />
+    <result column="level" property="level" jdbcType="INTEGER" />
+    <result column="p_id" property="pId" jdbcType="VARCHAR" />
+    <result column="task_description" property="taskDescription" jdbcType="LONGVARCHAR" />
+    <result column="remark" property="remark" jdbcType="LONGVARCHAR" />
+    <result column="workratio" property="workratio" jdbcType="DOUBLE" />
+    <result column="test_stage" property="testStage" jdbcType="INTEGER" />
+    <result column="case_day" property="caseDay" jdbcType="INTEGER" />
+    <result column="case_num" property="caseNum" jdbcType="INTEGER" />
+    <result column="turn" property="turn" jdbcType="VARCHAR" />
+    <collection property="children" ofType="com.cszx.pm.model.task.TaskTree" select="getSubTasks" column="id"></collection>
+  </resultMap>
+
+  <sql id="Blob_Column_List" >
+      id, task_name, task_require, 
+      task_state, executor, expect_start_time, 
+      actual_start_time, deadline, actual_end_time, 
+      creat_time, expect_day, actual_day, 
+      actual_progress, curr_state, 
+      workload, level, p_id, workratio,test_stage,
+      task_description, remark,case_day,case_num,turn
+  </sql>
+  
+  <select id="getTasks" resultMap="BaseResultMap"  parameterType="java.util.Map">
+  		select
+  		<include refid="Blob_Column_List" />,
+  		<![CDATA[
+  		IF(expect_start_time<SYSDATE(),((SELECT COUNT(id) FROM workday WHERE 
+	    workday BETWEEN expect_start_time AND IF(SYSDATE()<deadline,SYSDATE(),deadline))/expect_day*100),0) AS expect_progress
+		]]>
+  		from pm_task
+  		where 1=1
+	    <if test="pId != null and pId != ''" >
+	        and p_id =#{pId}
+	    </if>
+	    <if test="level != null ">
+	        and level =#{level}
+	    </if>
+	   	<if test="taskState != null ">
+	        and task_state =#{taskState}
+	    </if>
+	    <if test="executor != null and executor !=''">
+	        and executor =#{executor}
+	    </if>
+	    <if test="taskName != null and taskName!=''">
+	        and task_name like concat('%',#{taskName},'%')
+	    </if>
+	    <if test="expectMonth != null and expectMonth != ''" >
+	    	<![CDATA[
+	        and deadline > #{expectMonth}
+	        and (expect_start_time < #{expectMonth}
+	    	OR CONVERT(expect_start_time, CHAR) LIKE CONCAT(#{expectMonth}, '%') )]]>
+    	</if>
+    	<if test="actualMonth != null and actualMonth != ''" >
+	    	<![CDATA[
+	        and actual_end_time > #{actualMonth}
+	        and (actual_start_time < #{actualMonth}
+	    	OR CONVERT(actual_start_time, CHAR) LIKE CONCAT(#{actualMonth}, '%') )]]>
+    	</if>
+    	<if test="expectStartTime1 != null and expectStartTime1 !=''">
+  		and expect_start_time &gt;=#{expectStartTime1}
+	  	</if>
+	  	<if test="expectStartTime2 != null and expectStartTime2 !=''">
+	  	<![CDATA[
+	  		and expect_start_time <= #{expectStartTime2}
+	  	]]>	
+	  	</if>
+	  	
+	  	<if test="expectEndTime1 != null and expectEndTime1 !=''">
+	  		and deadline &gt;=#{expectEndTime1}
+	  	</if>
+	  	<if test="expectEndTime2 != null and expectEndTime2 !=''">
+	  	<![CDATA[
+	  		and deadline <= #{expectEndTime2}
+	  	]]>	
+	  	</if>
+	  	<if test="actualStartTime1 != null and actualStartTime1 !=''">
+	  		and actual_Start_Time &gt;=#{actualStartTime1}
+	  	</if>
+	  	<if test="actualStartTime2 != null and actualStartTime2 !=''">
+	  	<![CDATA[
+	  		and actual_Start_Time <= #{actualStartTime2}
+	  	]]>	
+	  	</if> 	
+	  	<if test="actualEndTime1 != null and actualEndTime1 !=''">
+	  		and actual_End_Time &gt;=#{actualEndTime1}
+	  	</if>
+	  	<if test="actualEndTime2 != null and actualEndTime2 !=''">
+	  	<![CDATA[
+	  		and actual_End_Time <= #{actualEndTime2}
+	  	]]>	
+	  	</if>
+	  	<if test="pids != null and pids !=''">
+	  		and not find_in_set(p_id,#{pids})
+	  	</if>
+	  	order by  p_id,expect_start_time DESC 
+  </select>
+  
+   <select id="getSubTasks" resultMap="BaseResultMap"  parameterType="java.lang.String">
+  		select
+  		<include refid="Blob_Column_List" />,
+  		<![CDATA[
+  		IF(expect_start_time<SYSDATE(),((SELECT COUNT(id) FROM workday WHERE 
+	    workday BETWEEN expect_start_time AND IF(SYSDATE()<deadline,SYSDATE(),deadline))/expect_day*100),0) AS expect_progress,
+		]]> 
+			actual_day
+  		from 
+  			pm_task
+  		where p_id =#{id}
+
+	  	order by  p_id,expect_start_time DESC 
+  </select>
+  
+  <select id="findPreNode" resultMap="BaseResultMap"  parameterType="java.lang.String">
+  		select
+  		<include refid="Blob_Column_List" />,
+  		<![CDATA[
+  		IF(expect_start_time<SYSDATE(),((SELECT COUNT(id) FROM workday WHERE 
+	    workday BETWEEN expect_start_time AND IF(SYSDATE()<deadline,SYSDATE(),deadline))/expect_day*100),0) AS expect_progress
+		]]>
+  		from pm_task
+  		where  id =#{pId}
+  </select>
+  
+  <select id="countNode" resultType="java.lang.Integer" parameterType="java.lang.String">
+  	select count(id) from
+  	pm_task
+  	where p_id=#{id} and level!=1
+  </select>
+  
+  <select id="countAllTreeNum" resultType="java.lang.Integer" parameterType="java.util.Map">
+  	select count(id) from
+  	pm_task
+  	where level=1 
+	    <if test="taskState != null ">
+	        and task_state =#{taskState}
+	    </if>
+	    <if test="executor != null and executor !=''">
+	        and executor =#{executor}
+	    </if>
+	    <if test="taskName != null and taskName!=''">
+	        and task_name like concat('%',#{taskName},'%')
+	    </if>
+	    <if test="expectMonth != null and expectMonth != ''" >
+	    	<![CDATA[
+	        and deadline > #{expectMonth}
+	        and (expect_start_time < #{expectMonth}
+	    	OR CONVERT(expect_start_time, CHAR) LIKE CONCAT(#{expectMonth}, '%') )]]>
+    	</if>
+    	<if test="actualMonth != null and actualMonth != ''" >
+	    	<![CDATA[
+	        and actual_end_time > #{actualMonth}
+	        and (actual_start_time < #{actualMonth}
+	    	OR CONVERT(actual_start_time, CHAR) LIKE CONCAT(#{actualMonth}, '%') )]]>
+    	</if>
+    	<if test="expectStartTime1 != null and expectStartTime1 !=''">
+  		and expect_start_time &gt;=#{expectStartTime1}
+	  	</if>
+	  	<if test="expectStartTime2 != null and expectStartTime2 !=''">
+	  	<![CDATA[
+	  		and expect_start_time <= #{expectStartTime2}
+	  	]]>	
+	  	</if>
+	  	
+	  	<if test="expectEndTime1 != null and expectEndTime1 !=''">
+	  		and deadline &gt;=#{expectEndTime1}
+	  	</if>
+	  	<if test="expectEndTime2 != null and expectEndTime2 !=''">
+	  	<![CDATA[
+	  		and deadline <= #{expectEndTime2}
+	  	]]>	
+	  	</if>
+	  	<if test="actualStartTime1 != null and actualStartTime1 !=''">
+	  		and actual_Start_Time &gt;=#{actualStartTime1}
+	  	</if>
+	  	<if test="actualStartTime2 != null and actualStartTime2 !=''">
+	  	<![CDATA[
+	  		and actual_Start_Time <= #{actualStartTime2}
+	  	]]>	
+	  	</if> 	
+	  	<if test="actualEndTime1 != null and actualEndTime1 !=''">
+	  		and actual_End_Time &gt;=#{actualEndTime1}
+	  	</if>
+	  	<if test="actualEndTime2 != null and actualEndTime2 !=''">
+	  	<![CDATA[
+	  		and actual_End_Time <= #{actualEndTime2}
+	  	]]>	
+	  	</if>
+  </select>
+  
+</mapper>
