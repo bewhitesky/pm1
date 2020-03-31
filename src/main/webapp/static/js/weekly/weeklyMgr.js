@@ -3,12 +3,18 @@ $(document).ready(function () {
 
     WeeklyTable();
 
+    if(userName=="系统管理员"){
+        userName="";
+    }
+
 })
 
 function WeeklyTable(){
     $("#WeeklyTable").datagrid({
         url:basePath+'/WeeklyController/selectWeekly',
-
+        queryParams:{
+            'w_name':userName
+        },
         columns:[[
             {
                 field:'id',
@@ -37,32 +43,36 @@ function WeeklyTable(){
             {
                 field:'last_work_sketch',
                 title:'上周工作情况',
-                width:100,
+                width:400,
                 align:'center'
             },
             {
                 field:'w_type',
                 title:'任务分类',
-                width:100,
-                align:'center'
+                width:200,
+                align:'center',
+                formatter:function (value,row,index) {
+                    if(value==null)return "";
+                    return w_typeMap[value];
+                }
             },
             {
                 field:'u_time',
                 title:'耗时',
-                width:100,
+                width:60,
                 align:'center'
 
             },
             {
                 field:'this_work_sketch',
                 title:'本周计划',
-                width:200,
+                width:400,
                 align:'center'
             },
             {
                 field:'remarks',
                 title:'备注',
-                width:100,
+                width:200,
                 align:'center'
             },
 
@@ -108,18 +118,25 @@ function WeeklyTable(){
 
 
 function selectWeekly() {
+
     var w_name = $("#searchForm #w_name").val();
+
     var w_type = $("#searchForm #w_type").val();
     var time = $("#searchForm #time").val();
-    $("WeeklyTable").datagrid("reload",{
-        'w_name':w_name,
-        'w_type':w_type,
-        'time':time
-    })
+    $("#WeeklyTable").datagrid("reload",
+        {
+            'w_name':userName,
+            'w_type':w_type,
+            'time':time
+        });
 }
 
 function resetForm() {
-    $("#searchForm #imptask_name").val("");
-    $("#searchForm #imptask_taskcls").val("");
-    $("#searchForm #p_complete_time").val("");
+    $("#searchForm #w_name").val("");
+    $("#searchForm #w_type").combobox('setValue',"");
+    $("#searchForm #time").val("");
 }
+
+
+
+

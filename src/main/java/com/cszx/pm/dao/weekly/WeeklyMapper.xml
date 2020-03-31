@@ -11,7 +11,7 @@
         <result column="last_work_sketch" property="last_work_sketch" jdbcType="VARCHAR"/>
         <result column="u_time" property="u_time" jdbcType="VARCHAR"/>
         <result column="this_work_sketch" property="this_work_sketch" jdbcType="VARCHAR"/>
-        <result column="w_type" property="w_type" jdbcType="VARCHAR"/>
+        <result column="w_type" property="w_type" jdbcType="INTEGER"/>
         <result column="remarks" property="remarks" jdbcType="VARCHAR"/>
 
     </resultMap>
@@ -21,74 +21,54 @@
 
     <select id="selectWeekly" resultMap="Baseinfo" parameterType="java.util.Map">
         select
-        <include refid="Base_List"/>
+        id,w_name,last_work_sketch,u_time,this_work_sketch,w_type,remarks,
+        DATE_FORMAT(time,"%Y-%m-%d") AS time
         from pm_weekly
         where 1=1
-        <if test="w_name !=null">
+
+        <if test="w_name !=null and w_name !=''">
             and w_name=#{w_name}
         </if>
-        <if test="w_type!=null">
+        <if test="w_type != null and w_type !=''">
             and w_type=#{w_type}
         </if>
-        <if test="time !=null">
-            and time=#{time}
+        <if test="weeklyStartTime !=null and weeklyStartTime !=''">
+            and time >= #{weeklyStartTime}
         </if>
+        <if test="weeklyEndTime !=null and weeklyEndTime !=''">
+        <![CDATA[
+            and time <= #{weeklyEndTime}
+        ]]>
+        </if>
+
     </select>
 
-    <insert id="addWeekly" parameterType="com.cszx.pm.model.weekly.WeeklyVo">
+    <insert id="addWeekly" parameterType="java.util.List">
         insert into pm_weekly
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="id != null">
-                id,
-            </if>
-            <if test="w_name !=null">
-                w_name,
-            </if>
-            <if test="time !=null">
-                time,
-            </if>
-            <if test="last_work_sketch !=null">
-                last_work_sketch,
-            </if>
-            <if test="u_time !=null">
-                u_time,
-            </if>
-            <if test="this_work_sketch !=null">
-                this_work_sketch,
-            </if>
-            <if test="w_type !=null">
-                w_type,
-            </if>
-            <if test="remarks !=null">
-                remarks,
-            </if>
+            id,w_name,time,last_work_sketch,u_time,this_work_sketch,w_type,remarks
         </trim>
-        <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="id != null">
-                #{id,jdbcType=VARCHAR},
-            </if>
-            <if test="w_name !=null">
-                #{w_name,jdbcType=VARCHAR},
-            </if>
-            <if test="time !=null">
-                #{time,jdbcType=TIMESTAMP},
-            </if>
-            <if test="last_work_sketch !=null">
-                #{last_work_sketch,jdbcType=VARCHAR},
-            </if>
-            <if test="u_time !=null">
-                #{u_time,jdbcType=VARCHAR},
-            </if>
-            <if test="this_work_sketch !=null">
-                #{this_work_sketch,jdbcType=VARCHAR},
-            </if>
-            <if test="w_type !=null">
-                #{w_type,jdbcType=VARCHAR},
-            </if>
-            <if test="remarks !=null">
-                #{remarks,JDBCtYPE=varchar},
-            </if>
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+        <trim prefix=" (" suffix=")" suffixOverrides=",">
+
+                #{item.id,jdbcType=VARCHAR},
+
+                #{item.w_name,jdbcType=VARCHAR},
+
+                #{item.time,jdbcType=TIMESTAMP},
+
+                #{item.last_work_sketch,jdbcType=VARCHAR},
+
+                #{item.u_time,jdbcType=VARCHAR},
+
+                #{item.this_work_sketch,jdbcType=VARCHAR},
+
+                #{item.w_type,jdbcType=INTEGER},
+
+                #{item.remarks,jdbcType=VARCHAR},
         </trim>
+        </foreach>
     </insert>
 
     <update id="updateWeekly" parameterType="com.cszx.pm.model.weekly.WeeklyVo">
@@ -110,17 +90,17 @@
                 this_work_sketch= #{this_work_sketch,jdbcType=VARCHAR},
             </if>
             <if test="w_type !=null">
-                w_type= #{w_type,jdbcType=VARCHAR},
+                w_type= #{w_type,jdbcType=INTEGER},
             </if>
             <if test="remarks !=null">
-                remarks=#{remarks,JDBCtYPE=varchar},
+                remarks=#{remarks,jdbcType=VARCHAR},
             </if>
         </set>
         where id=#{id,jdbcType=VARCHAR}
     </update>
 
     <delete id="deleteWeekly" parameterType="java.util.List">
-        delete from pm_weekly
+        delete from pm_weekly where id in
         <foreach collection="list" item="id" open="(" close=")" separator=",">
             #{id}
         </foreach>

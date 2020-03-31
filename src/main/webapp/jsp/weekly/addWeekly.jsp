@@ -1,10 +1,12 @@
 <%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
+<%@ page import="org.apache.shiro.SecurityUtils" %>
 <!DOCTYPE html>
 <html>
 <%
     String basePath=request.getScheme()+"://"
             +request.getServerName()+":"+request.getServerPort()
             +request.getContextPath();
+    String userName=(String) SecurityUtils.getSubject().getSession().getAttribute("userName");
 %>
 <head>
     <meta charset="utf-8">
@@ -25,8 +27,10 @@
     <script type="text/javascript" src="../../assets/easyui/easyui-lang-zh_CN.js"></script>
     <script type="text/javascript" src="../../static/js/common.js"></script>
 
-
+    <script type="text/javascript" src="../../static/js/weekly/weeklyMgr.js"></script>
     <script type="text/javascript" src="../../static/js/weekly/weeklyOpt.js"></script>
+
+
 
 </head>
 
@@ -35,13 +39,15 @@
 <div style="padding-top: 20px">
     <form id="weeklyForm">
         <input type="hidden" id="id">
-        <div class="layui-form-item" style ="padding-left: 1300px">
+        <div class="layui-form-item" style ="padding-left: 1100px">
             <button type="button" class="layui-btn" onclick="addWeeklyItems()">添加周报项</button>
+            <button type="button" class="layui-btn" onclick="delWeeklyItems()">删除周报项</button>
         </div>
 
-        <div class="layui-form-item">
-            <div style="padding-left:30px;padding-right:30px;width:1430px;height:620px">
-                <table id="subitemsTable" lay-filter="weeklyitemsOpt"></table>
+
+        <div class="easyui-layout" style="width:1400px;height:400px;">
+            <div id="ImptaskDiv" region="center" style="padding:5px;" border="false">
+                <table id="addweeklyTable" class="easyui-datagrid" style="width:1300px; height:320px;"></table>
             </div>
         </div>
 
@@ -60,6 +66,9 @@
     var itemsList=new Array();
     var index=0;
     var basePath='<%=basePath%>';
+
+    var userName = parent.userName;
+
     layui.use('form', function(){
         var form = layui.form;
     });

@@ -174,6 +174,25 @@ function initCombo(groupCode,selector){
 			});
 	return object;
 }
+
+function initW_type(groupCode) {
+
+	$.ajax({
+		url: basePath + '/datadicController/initCombobox',
+		method: 'post',
+		data: {
+			'groupCode': groupCode
+		},
+		async: false,
+		success: function (data) {
+			if (data.mes == "success") {
+				w_type=data.rows.datadicItems;
+
+			}
+		}
+	});
+	return w_type;
+}
 /**
  * 日期格式化
  * @param {} date

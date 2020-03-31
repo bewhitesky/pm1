@@ -8,7 +8,7 @@ public class WeeklyVo {
     private String w_name;
     private String time;
     private String last_work_sketch;
-    private String w_type;
+    private Integer w_type;
     private  String u_time;
     private  String this_work_sketch;
     private String remarks;
@@ -60,11 +60,11 @@ public class WeeklyVo {
         this.last_work_sketch = last_work_sketch;
     }
 
-    public String getW_type() {
+    public Integer getW_type() {
         return w_type;
     }
 
-    public void setW_type(String w_type) {
+    public void setW_type(Integer w_type) {
         this.w_type = w_type;
     }
 

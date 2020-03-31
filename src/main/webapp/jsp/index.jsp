@@ -43,10 +43,6 @@
 	      </li-->
 	    </ul>
 	    <ul class="layui-nav layui-layout-right">
-		  <li class="layui-nav-item">
-			  <a href="javascript:;" id="checkwarn" onclick="showWarn()">查看告警<span class="layui-badge" id="warn"></span></a>
-
-		  </li>
 	      <li class="layui-nav-item">
 	        <a href="javascript:;">
 	          <span  class="layui-icon layui-icon-user"> <%=userName %></span>

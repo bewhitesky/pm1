@@ -198,7 +198,6 @@ function importImgTask() {
                 //请求异常回调
             }
         })
-
     })
 }
 

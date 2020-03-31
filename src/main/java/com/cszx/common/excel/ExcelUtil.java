@@ -176,6 +176,8 @@ public class ExcelUtil {
 		dataMap.put("imptask_state","imptask_state");//重要任务状态
 		dataMap.put("imptask_taskcls","imptask_taskcls");//重要任务分类
 		dataMap.put("p_charge", "test_principal");// 测试负责人
+
+		dataMap.put("w_type", "w_type");// 测试负责人
 		createFont(workbook); // 字体样式
 		createTableHeader(sheet, map); // 创建标题（头）
 		createTableRows(sheet, map, objs, clazz, workbook); // 创建内容

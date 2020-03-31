@@ -34,10 +34,13 @@
 <div>
     <form id="searchForm">
         <div>
+            <shiro:hasRole name="admin">
             <label style="padding-left: 10px">姓名：</label>
             <div class="layui-input-inline">
                 <input class="easyui-validatebox layui-input" type="text" id="w_name" name="w_name">
             </div>
+            </shiro:hasRole>
+
             <label style="padding-left: 25px">类别：</label>
             <div class="layui-input-inline">
                 <input class="easyui-combobox" type="text" id="w_type" name="w_type">
@@ -46,8 +49,6 @@
             <div class="layui-input-inline">
                 <input class="layui-input" type="text" id="time" name="time" placeholder="开始时间~结束时间">
             </div>
-
-
 
 
             <button type="button" class="layui-btn layui-btn-md" style="margin-left:10px" onclick="selectWeekly()">
@@ -69,11 +70,11 @@
     <button class="layui-btn layui-btn-md" onclick="deleteWeekly()">
         删除
     </button>
-    <button class="layui-btn layui-btn-md" onclick="importWeekly()">
-        导入
-    </button>
     <button class="layui-btn layui-btn-md" onclick="exportWeekly()">
         导出
+    </button>
+    <button class="layui-btn layui-btn-md" id="importExcel">
+        导入
     </button>
 </div>
 
@@ -89,12 +90,14 @@
 
 <script type="text/javascript">
     var basePath = '<%=basePath%>';
+    var userName = parent.userName;
+
 
     layui.use('laydate', function(){
         var laydate = layui.laydate;
         laydate.render({
             elem: '#time',
-            range:true
+            range:'~'
         });
     });
 
